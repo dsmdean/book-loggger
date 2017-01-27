@@ -1,24 +1,25 @@
 {
-    "name": "booklogger",
-    "version": "1.0.0",
-    "description": "Project for a course on Pluralsight",
-    "main": "index.html",
-    "moduleType": [],
-    "authors": [
-        "Jogesh Muppala"
-    ],
-    "homepage": "",
-    "ignore": [
-        "**/.*",
-        "node_modules",
-        "bower_components",
-        "test",
-        "tests"
-    ],
-    "dependencies": {
-        "bootstrap": "~3.3.5",
-        "angular": "~1.4.7",
-        "angular-route": "~1.4.8",
-        "angular-ui-router": "~0.2.15"
-    }
+  "name": "booklogger",
+  "version": "1.0.0",
+  "description": "Project for a course on Pluralsight",
+  "main": "index.html",
+  "moduleType": [],
+  "authors": [
+    "Jogesh Muppala"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "angular": "~1.4.7",
+    "angular-route": "~1.4.8",
+    "angular-ui-router": "~0.2.15",
+    "angular-cookies": "^1.6.1"
+  }
 }

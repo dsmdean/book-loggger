@@ -1,8 +1,8 @@
 (function() {
     angular.module('app')
-        .factory('dataService', dataService);
+        .factory('dataService', ['$q', '$timeout', dataService]);
 
-    function dataService(logger) {
+    function dataService($q, $timeout) {
         return {
             getAllBooks: getAllBooks,
             getAllReaders: getAllReaders
@@ -10,34 +10,45 @@
 
         function getAllBooks() {
 
-            logger.output('getting all books');
-
-            return [{
+            var booksArray = [{
                     book_id: 1,
                     title: "Anna Karenina",
                     author: "Leo Tolstoy",
-                    year_published: 1878
+                    yearPublished: 1878
                 },
                 {
                     book_id: 2,
                     title: "The Things They Carried",
                     author: "Tim O'Brien",
-                    year_published: 1990
+                    yearPublished: 1990
                 },
                 {
                     book_id: 3,
                     title: "Invisible Man",
                     author: "Ralph Ellison",
-                    year_published: 1952
+                    yearPublished: 1952
                 }
             ];
+
+            var deferred = $q.defer();
+            $timeout(function() {
+                var successful = true;
+                if (successful) {
+                    deferred.notify('Just getting started gathering books...');
+                    deferred.notify('Almost done gathering...');
+
+                    deferred.resolve(booksArray);
+                } else {
+                    deferred.reject('Error retrieving books.');
+                }
+            }, 1000);
+
+            return deferred.promise;
         };
 
         function getAllReaders() {
 
-            logger.output('getting all readers');
-
-            return [{
+            var readersArray = [{
                     reader_id: 1,
                     name: 'Marie',
                     weeklyReadingGoal: 315,
@@ -56,8 +67,14 @@
                     totalMinutesRead: 600
                 }
             ];
+
+            var deferred = $q.defer();
+
+            $timeout(function() {
+                deferred.resolve(readersArray);
+            }, 1500);
+
+            return deferred.promise;
         };
     }
-
-    dataService.$inject = ['logger'];
 }());
