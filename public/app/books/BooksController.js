@@ -1,16 +1,18 @@
 (function() {
 
     angular.module('app')
-        .controller('BooksController', BooksController);
+        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', function(books, dataService, logger, badgeService) {
 
+            var vm = this;
 
-    function BooksController(books) {
+            vm.appName = books.appName;
 
-        var vm = this;
+            vm.allBooks = dataService.getAllBooks();
+            vm.allReaders = dataService.getAllReaders();
 
-        vm.appName = books.appName;
+            vm.getBadge = badgeService.retrieveBadge;
 
-    }
+            logger.output('BooksController has been created.');
 
-
+        }]);
 }());
