@@ -26,7 +26,10 @@
         };
     }]);
 
-    app.config(['booksProvider', '$routeProvider', '$logProvider', '$httpProvider', function(booksProvider, $routeProvider, $logProvider, $httpProvider) {
+    app.config(['booksProvider', '$routeProvider', '$logProvider', '$httpProvider', '$provide', function(booksProvider, $routeProvider, $logProvider, $httpProvider, $provide) {
+
+        $provide.decorator('$log', ['$delegate', 'books', logDecorator]);
+
         booksProvider.setIncludeVersionInTitle(true);
         $logProvider.debugEnabled(true);
 
@@ -51,10 +54,49 @@
             .otherwise('/');
     }]);
 
+    function logDecorator($delegate, books) {
+
+        function log(message) {
+            message += ' - ' + new Date() + ' (' + books.appName + ')';
+            $delegate.log(message);
+        }
+
+        function info(message) {
+            $delegate.info(message);
+        }
+
+        function warn(message) {
+            $delegate.warn(message);
+        }
+
+        function error(message) {
+            $delegate.error(message);
+        }
+
+        function debug(message) {
+            $delegate.debug(message);
+        }
+
+        function awesome(message) {
+            message = 'Awesome!!! - ' + message;
+            $delegate.debug(message);
+        }
+
+        return {
+            log: log,
+            info: info,
+            warn: warn,
+            error: error,
+            debug: debug,
+            awesome: awesome
+        };
+
+    }
+
     app.run(['$rootScope', function($rootScope) {
 
         $rootScope.$on('$routeChangeSuccess', function(event, current, previous) {
-            console.log('successfully changed routes');
+            // console.log('successfully changed routes');
         });
 
         $rootScope.$on('$routeChangeError', function(event, current, previous, rejection) {

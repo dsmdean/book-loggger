@@ -1,13 +1,21 @@
 (function() {
 
     angular.module('app')
-        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', 'BooksResource', BooksController]);
+        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', 'BooksResource', 'currentUser', BooksController]);
 
-    function BooksController(books, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, BooksResource) {
+    function BooksController(books, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, BooksResource, currentUser) {
 
         var vm = this;
 
         vm.appName = books.appName;
+
+        dataService.getUserSummary()
+            .then(getUserSummarySuccess);
+
+        function getUserSummarySuccess(summaryData) {
+            // $log.log(summaryData);
+            vm.summaryData = summaryData;
+        }
 
         /**
         var booksPromise = dataService.getAllBooks();
@@ -27,12 +35,12 @@
         }
         **/
 
-        // dataService.getAllBooks()
-        //     .then(getBooksSuccess)
-        //     .catch(errorCallback)
-        //     .finally(getAllBooksComplete);
+        dataService.getAllBooks()
+            .then(getBooksSuccess)
+            .catch(errorCallback)
+            .finally(getAllBooksComplete);
 
-        vm.allBooks = BooksResource.query();
+        // vm.allBooks = BooksResource.query();
 
         function getBooksSuccess(books) {
             vm.allBooks = books;
@@ -43,7 +51,7 @@
         }
 
         function getAllBooksComplete() {
-            $log.info('getAllBooks has completed.');
+            // $log.info('getAllBooks has completed.');
         }
 
         dataService.getAllReaders()
@@ -53,10 +61,11 @@
 
         function getReadersSuccess(readers) {
             vm.allReaders = readers;
+            $log.awesome('All readers retrieved');
         }
 
         function getAllReadersComplete() {
-            $log.info('getAllReaders has completed.');
+            // $log.info('getAllReaders has completed.');
         }
 
         vm.deleteBook = function(bookID) {
@@ -78,7 +87,8 @@
 
         vm.favoriteBook = $cookies.favoriteBook;
 
-        vm.lastEdited = $cookieStore.get('lastEdited');
+        // vm.lastEdited = $cookieStore.get('lastEdited');
+        vm.currentUser = currentUser;
 
     }
 }());

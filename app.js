@@ -5,7 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var config = require('./config');
+var config = require('./server/config');
 
 // Connection URL
 mongoose.connect(config.mongoUrl);
@@ -16,14 +16,14 @@ db.once('open', function() {
     console.log("Connected correctly to server");
 });
 
-var index = require('./routes/index');
-var users = require('./routes/users');
-var books = require('./routes/books');
+var index = require('./server/routes/index');
+var users = require('./server/routes/users');
+var books = require('./server/routes/books');
 
 var app = express();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'server/views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
