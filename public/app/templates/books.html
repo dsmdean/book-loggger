@@ -2,13 +2,14 @@
 <div>
     <ul>
         <li ng-repeat="book in books.allBooks">{{book.title}} - {{book.author}}
-            <a href="#/EditBook/{{book.book_id}}">Edit</a>
+            <a href="#/EditBook/{{book._id}}">Edit</a>
+            <a href="" ng-click="books.deleteBook(book._id)">Delete</a>
         </li>
     </ul>
 </div>
 
 <a href="#/AddBook">Add New Book</a>
-<a href="#/EditBook/{{books.lastEdited.book_id}}">Open Last Edited</a>
+<a href="#/EditBook/{{books.lastEdited._id}}">Open Last Edited</a>
 
 <h3>All Readers</h3>
 <div>

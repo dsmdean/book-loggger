@@ -1,50 +1,113 @@
 (function() {
     angular.module('app')
-        .factory('dataService', ['$q', '$timeout', dataService]);
+        .factory('dataService', ['$q', '$timeout', '$http', 'constants', dataService]);
 
-    function dataService($q, $timeout) {
+    function dataService($q, $timeout, $http, constants) {
         return {
             getAllBooks: getAllBooks,
-            getAllReaders: getAllReaders
+            getAllReaders: getAllReaders,
+            getBookByID: getBookByID,
+            updateBook: updateBook,
+            addBook: addBook,
+            deleteBook: deleteBook
         };
 
         function getAllBooks() {
+            return $http({
+                    method: 'GET',
+                    url: 'api/books',
+                    headers: {
+                        'PS-BookLogger-Version': constants.APP_VERSION
+                    },
+                    transformResponse: transformGetBooks
+                })
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
 
-            var booksArray = [{
-                    book_id: 1,
-                    title: "Anna Karenina",
-                    author: "Leo Tolstoy",
-                    yearPublished: 1878
-                },
-                {
-                    book_id: 2,
-                    title: "The Things They Carried",
-                    author: "Tim O'Brien",
-                    yearPublished: 1990
-                },
-                {
-                    book_id: 3,
-                    title: "Invisible Man",
-                    author: "Ralph Ellison",
-                    yearPublished: 1952
-                }
-            ];
+        function transformGetBooks(data, headersGetter) {
 
-            var deferred = $q.defer();
-            $timeout(function() {
-                var successful = true;
-                if (successful) {
-                    deferred.notify('Just getting started gathering books...');
-                    deferred.notify('Almost done gathering...');
+            var transformed = angular.fromJson(data);
 
-                    deferred.resolve(booksArray);
-                } else {
-                    deferred.reject('Error retrieving books.');
-                }
-            }, 1000);
+            transformed.forEach(function(currentValue, index, array) {
+                currentValue.dateDownloaded = new Date();
+            });
 
-            return deferred.promise;
-        };
+            console.log(transformed);
+            return transformed;
+        }
+
+        function sendResponseData(response) {
+            return response.data;
+        }
+
+        function sendGetBooksError(response) {
+            return $q.reject('Error retrieving book(s). (HTTP status: ' + response.status + ')');
+        }
+
+        function getBookByID(bookID) {
+            return $http.get('api/books/' + bookID)
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
+
+        function updateBook(book) {
+            return $http({
+                    method: 'PUT',
+                    url: 'api/books/' + book._id,
+                    data: book
+                })
+                .then(updateBookSuccess)
+                .catch(updateBookError);
+        }
+
+        function updateBookSuccess(response) {
+            return 'Book updated: ' + response.config.data.title;
+        }
+
+        function updateBookError(response) {
+            return $q.reject('Error updating book. (HTTP status: ' + response.status + ')');
+        }
+
+        function addBook(newBook) {
+            return $http.post('api/books', newBook, {
+                    transformRequest: transformPostRequest
+                })
+                .then(addBookSucces)
+                .catch(addBookError);
+        }
+
+        function transformPostRequest(data, headersGetter) {
+            data.newBook = true;
+            console.log(data);
+
+            return JSON.stringify(data);
+        }
+
+        function addBookSucces(response) {
+            return 'Book added: ' + response.config.data.title;
+        }
+
+        function addBookError(response) {
+            return $q.reject('Error adding book. (HTTP status: ' + response.status + ')');
+        }
+
+        function deleteBook(bookID) {
+            return $http({
+                    method: 'DELETE',
+                    url: 'api/books/' + bookID
+                })
+                .then(deleteBookSuccess)
+                .catch(deleteBookError);
+        }
+
+        function deleteBookSuccess(response) {
+            return 'Book deleted.';
+        }
+
+        function deleteBookError(response) {
+            return $q.reject('Error deleting book. (HTTP status: ' + response.status + ')');
+        }
 
         function getAllReaders() {
 

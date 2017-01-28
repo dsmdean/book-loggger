@@ -1,65 +1,84 @@
 (function() {
 
     angular.module('app')
-        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', function(books, dataService, logger, badgeService, $q, $cookies, $cookieStore) {
+        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', 'BooksResource', BooksController]);
 
-            var vm = this;
+    function BooksController(books, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, BooksResource) {
 
-            vm.appName = books.appName;
+        var vm = this;
 
-            /**
-            var booksPromise = dataService.getAllBooks();
-            var readersPromise = dataService.getAllReaders();
+        vm.appName = books.appName;
 
-            $q.all([booksPromise, readersPromise])
-                .then(getAllDataSuccess)
-                .catch(getAllDataError);
+        /**
+        var booksPromise = dataService.getAllBooks();
+        var readersPromise = dataService.getAllReaders();
 
-            function getAllDataSuccess(dataArray) {
-                vm.allBooks = dataArray[0];
-                vm.allReaders = dataArray[1];
-            }
+        $q.all([booksPromise, readersPromise])
+            .then(getAllDataSuccess)
+            .catch(getAllDataError);
 
-            function getAllDataError(reason) {
-                console.log(reason);
-            }
-            **/
+        function getAllDataSuccess(dataArray) {
+            vm.allBooks = dataArray[0];
+            vm.allReaders = dataArray[1];
+        }
 
-            dataService.getAllBooks()
-                .then(getBooksSuccess)
-                .catch(errorCallback)
-                .finally(getAllBooksComplete);
+        function getAllDataError(reason) {
+            console.log(reason);
+        }
+        **/
 
-            function getBooksSuccess(books) {
-                vm.allBooks = books;
-            }
+        // dataService.getAllBooks()
+        //     .then(getBooksSuccess)
+        //     .catch(errorCallback)
+        //     .finally(getAllBooksComplete);
 
-            function errorCallback(errorMsg) {
-                console.log('Error Message: ' + errorMsg);
-            }
+        vm.allBooks = BooksResource.query();
 
-            function getAllBooksComplete() {
-                console.log('getAllBooks has completed.');
-            }
+        function getBooksSuccess(books) {
+            vm.allBooks = books;
+        }
 
-            dataService.getAllReaders()
-                .then(getReadersSuccess)
-                .catch(errorCallback)
-                .finally(getAllReadersComplete);
+        function errorCallback(errorMsg) {
+            $log.error('Error Message: ' + errorMsg);
+        }
 
-            function getReadersSuccess(readers) {
-                vm.allReaders = readers;
-            }
+        function getAllBooksComplete() {
+            $log.info('getAllBooks has completed.');
+        }
 
-            function getAllReadersComplete() {
-                console.log('getAllReaders has completed.');
-            }
+        dataService.getAllReaders()
+            .then(getReadersSuccess)
+            .catch(errorCallback)
+            .finally(getAllReadersComplete);
 
-            vm.getBadge = badgeService.retrieveBadge;
+        function getReadersSuccess(readers) {
+            vm.allReaders = readers;
+        }
 
-            vm.favoriteBook = $cookies.favoriteBook;
+        function getAllReadersComplete() {
+            $log.info('getAllReaders has completed.');
+        }
 
-            vm.lastEdited = $cookieStore.get('lastEdited');
+        vm.deleteBook = function(bookID) {
+            dataService.deleteBook(bookID)
+                .then(deleteBookSuccess)
+                .catch(deleteBookError);
+        };
 
-        }]);
+        function deleteBookSuccess(message) {
+            $log.info(message);
+            $route.reload();
+        }
+
+        function deleteBookError(errorMessage) {
+            $log.error(errorMessage);
+        }
+
+        vm.getBadge = badgeService.retrieveBadge;
+
+        vm.favoriteBook = $cookies.favoriteBook;
+
+        vm.lastEdited = $cookieStore.get('lastEdited');
+
+    }
 }());

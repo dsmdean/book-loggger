@@ -1,6 +1,6 @@
 (function() {
 
-    var app = angular.module('app', ['ngRoute', 'ngCookies']);
+    var app = angular.module('app', ['ngRoute', 'ngCookies', 'ngResource']);
 
     app.provider('books', ['constants', function(constants) {
 
@@ -26,8 +26,11 @@
         };
     }]);
 
-    app.config(['booksProvider', '$routeProvider', function(booksProvider, $routeProvider) {
+    app.config(['booksProvider', '$routeProvider', '$logProvider', '$httpProvider', function(booksProvider, $routeProvider, $logProvider, $httpProvider) {
         booksProvider.setIncludeVersionInTitle(true);
+        $logProvider.debugEnabled(true);
+
+        $httpProvider.interceptors.push('bookLoggerInterceptor');
 
         $routeProvider
             .when('/', {
@@ -38,17 +41,12 @@
             .when('/AddBook', {
                 templateUrl: 'app/templates/addBook.html',
                 controller: 'AddBookController',
-                controllerAs: 'addBook'
+                controllerAs: 'bookAdder'
             })
             .when('/EditBook/:bookID', {
                 templateUrl: 'app/templates/editBook.html',
                 controller: 'EditBookController',
-                controllerAs: 'bookEditor',
-                resolve: {
-                    books: function(dataService) {
-                        return dataService.getAllBooks();
-                    }
-                }
+                controllerAs: 'bookEditor'
             })
             .otherwise('/');
     }]);

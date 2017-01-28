@@ -16,12 +16,12 @@
     <div class="form-group">
         <label for="bookPublished" class="col-sm-1 control-label">Year</label>
         <div class="col-sm-4">
-            <input ng-model="bookEditor.currentBook.yearPublished" type="text" class="form-control" id="bookPublished" placeholder="Year Published">
+            <input ng-model="bookEditor.currentBook.year_published" type="text" class="form-control" id="bookPublished" placeholder="Year Published">
         </div>
     </div>
     <div class="form-group">
         <div class="col-sm-offset-1 col-sm-5">
-            <button class="btn btn-default">Save</button>
+            <button class="btn btn-default" ng-click="bookEditor.saveBook()">Save</button>
             <button class="btn btn-default" ng-click="bookEditor.setAsFavorite()">Set as Favorite</button>
         </div>
     </div>
