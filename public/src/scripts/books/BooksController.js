@@ -1,7 +1,5 @@
 (function() {
-
-    angular.module('app')
-        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', BooksController]);
+    'use strict';
 
     function BooksController(books, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser) {
 
@@ -11,36 +9,13 @@
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
 
-        dataService.getUserSummary()
-            .then(getUserSummarySuccess);
-
         function getUserSummarySuccess(summaryData) {
             // $log.log(summaryData);
             vm.summaryData = summaryData;
         }
 
-        /**
-        var booksPromise = dataService.getAllBooks();
-        var readersPromise = dataService.getAllReaders();
-
-        $q.all([booksPromise, readersPromise])
-            .then(getAllDataSuccess)
-            .catch(getAllDataError);
-
-        function getAllDataSuccess(dataArray) {
-            vm.allBooks = dataArray[0];
-            vm.allReaders = dataArray[1];
-        }
-
-        function getAllDataError(reason) {
-            console.log(reason);
-        }
-        **/
-
-        dataService.getAllBooks()
-            .then(getBooksSuccess)
-            .catch(errorCallback)
-            .finally(getAllBooksComplete);
+        dataService.getUserSummary()
+            .then(getUserSummarySuccess);
 
         // vm.allBooks = BooksResource.query();
 
@@ -56,10 +31,10 @@
             // $log.info('getAllBooks has completed.');
         }
 
-        dataService.getAllReaders()
-            .then(getReadersSuccess)
+        dataService.getAllBooks()
+            .then(getBooksSuccess)
             .catch(errorCallback)
-            .finally(getAllReadersComplete);
+            .finally(getAllBooksComplete);
 
         function getReadersSuccess(readers) {
             vm.allReaders = readers;
@@ -70,11 +45,10 @@
             // $log.info('getAllReaders has completed.');
         }
 
-        vm.deleteBook = function(bookID) {
-            dataService.deleteBook(bookID)
-                .then(deleteBookSuccess)
-                .catch(deleteBookError);
-        };
+        dataService.getAllReaders()
+            .then(getReadersSuccess)
+            .catch(errorCallback)
+            .finally(getAllReadersComplete);
 
         function deleteBookSuccess(message) {
             $log.info(message);
@@ -91,12 +65,21 @@
             $log.error(errorMessage);
         }
 
+        vm.deleteBook = function(bookID) {
+            dataService.deleteBook(bookID)
+                .then(deleteBookSuccess)
+                .catch(deleteBookError);
+        };
+
         vm.getBadge = badgeService.retrieveBadge;
 
         vm.favoriteBook = $cookies.favoriteBook;
 
         // vm.lastEdited = $cookieStore.get('lastEdited');
         vm.currentUser = currentUser;
-
     }
+
+    angular.module('app')
+        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', BooksController]);
+
 }());

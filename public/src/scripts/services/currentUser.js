@@ -1,14 +1,16 @@
 (function() {
-
-    angular.module('app')
-        .factory('currentUser', currentUser);
+    'use strict';
 
     function currentUser() {
+
+        var lastBookEdited = {};
 
         return {
             lastBookEdited: lastBookEdited
         };
-
-        var lastBookEdited = {};
     }
+
+    angular.module('app')
+        .factory('currentUser', currentUser);
+
 }());

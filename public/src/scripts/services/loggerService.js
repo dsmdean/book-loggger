@@ -1,7 +1,5 @@
 (function() {
-
-    angular.module('app')
-        .service('logger', BookAppLogger);
+    'use strict';
 
     function LoggerBase() {}
 
@@ -13,8 +11,11 @@
         LoggerBase.call(this);
         this.logBook = function(book) {
             console.log('Book: ' + book.title);
-        }
+        };
     }
 
     BookAppLogger.prototype = Object.create(LoggerBase.prototype);
+
+    angular.module('app')
+        .service('logger', BookAppLogger);
 }());

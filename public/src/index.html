@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Book Logger</title>
+
+    <!-- build:css styles/main.css -->
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="styles/style.css" rel="stylesheet">
+    <!-- endbuild -->
+
+</head>
+
+<body ng-app="app">
+
+    <!--<h1>Book Logger</h1>-->
+
+    <!--<div ng-view></div>-->
+
+    <div ui-view="header"></div>
+
+    <div ui-view="content" class="content"></div>
+
+    <div ui-view="footer" class="navbar-fixed-bottom"></div>
+
+    <!-- build:js scripts/main.js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+    <script src="scripts/app.js"></script>
+
+    <script src="scripts/books/BooksController.js"></script>
+    <script src="scripts/books/AddBookController.js"></script>
+    <script src="scripts/books/EditBookController.js"></script>
+
+    <script src="scripts/services/dataService.js"></script>
+    <script src="scripts/services/loggerService.js"></script>
+    <script src="scripts/services/constantService.js"></script>
+    <script src="scripts/services/badgeService.js"></script>
+    <script src="scripts/services/bookLoggerInterceptor.js"></script>
+    <script src="scripts/services/BooksResource.js"></script>
+    <script src="scripts/services/currentUser.js"></script>
+    <!-- endbuild -->
+
+</body>
+
+</html>

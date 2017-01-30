@@ -43,7 +43,7 @@ h2 {
 }
 
 a {
-    color: #0664b7;
+    color: #286090;
     text-decoration: none;
     -webkit-transition: all 0.2s ease;
     transition: all 0.2s ease;
@@ -141,7 +141,7 @@ footer .form-group {
 
 .book-listing {
     margin-top: 0.2%;
-    min-height: 400px;
+    min-height: 420px;
     height: 100%;
     background: #fff !important;
     border-radius: 3px;
@@ -206,4 +206,10 @@ footer .form-group {
     color: #777;
     font-size: 15px;
     font-weight: bold;
+}
+
+.not-active {
+    pointer-events: none;
+    cursor: default;
+    color: #7e8b9b;
 }

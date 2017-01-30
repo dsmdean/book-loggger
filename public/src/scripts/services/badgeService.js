@@ -1,9 +1,5 @@
 (function() {
-
-    angular.module('app')
-        .value('badgeService', {
-            retrieveBadge: retrieveBadge
-        });
+    'use strict';
 
     function retrieveBadge(minutesRead) {
         var badge = null;
@@ -21,5 +17,10 @@
 
         return badge;
     }
+
+    angular.module('app')
+        .value('badgeService', {
+            retrieveBadge: retrieveBadge
+        });
 
 }());

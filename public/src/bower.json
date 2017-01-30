@@ -18,7 +18,6 @@
         "angular-route": "~1.4.8",
         "angular-ui-router": "~0.2.15",
         "angular-cookies": "^1.6.1",
-        "angular-resource": "~1.5.5",
-        "font-awesome": "~4.4.0"
+        "angular-resource": "~1.5.5"
     }
 }
