@@ -1,11 +1,11 @@
 (function() {
     angular.module('app')
-        .controller('EditBookController', ['$routeParams', 'books', '$cookies', '$cookieStore', 'dataService', '$log', '$location', 'BooksResource', 'currentUser', EditBookController]);
+        .controller('EditBookController', ['$routeParams', '$stateParams', 'books', '$cookies', '$cookieStore', 'dataService', '$log', '$location', 'BooksResource', 'currentUser', EditBookController]);
 
-    function EditBookController($routeParams, books, $cookies, $cookieStore, dataService, $log, $location, BooksResource, currentUser) {
+    function EditBookController($routeParams, $stateParams, books, $cookies, $cookieStore, dataService, $log, $location, BooksResource, currentUser) {
         var vm = this;
 
-        dataService.getBookByID($routeParams.bookID)
+        dataService.getBookByID($stateParams.bookID)
             .then(getBookSuccess)
             .catch(getBookError);
 

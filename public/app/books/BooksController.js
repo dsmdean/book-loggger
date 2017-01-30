@@ -1,13 +1,15 @@
 (function() {
 
     angular.module('app')
-        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', 'BooksResource', 'currentUser', BooksController]);
+        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', BooksController]);
 
-    function BooksController(books, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, BooksResource, currentUser) {
+    function BooksController(books, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser) {
 
         var vm = this;
 
         vm.appName = books.appName;
+        vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
+        vm.search = "";
 
         dataService.getUserSummary()
             .then(getUserSummarySuccess);
@@ -76,7 +78,13 @@
 
         function deleteBookSuccess(message) {
             $log.info(message);
-            $route.reload();
+            // $route.reload();
+
+            $state.transitionTo($state.current, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
         }
 
         function deleteBookError(errorMessage) {

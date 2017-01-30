@@ -1,6 +1,6 @@
 (function() {
 
-    var app = angular.module('app', ['ngRoute', 'ngCookies', 'ngResource']);
+    var app = angular.module('app', ['ngRoute', 'ngCookies', 'ngResource', 'ui.router']);
 
     app.provider('books', ['constants', function(constants) {
 
@@ -26,7 +26,7 @@
         };
     }]);
 
-    app.config(['booksProvider', '$routeProvider', '$logProvider', '$httpProvider', '$provide', function(booksProvider, $routeProvider, $logProvider, $httpProvider, $provide) {
+    app.config(['booksProvider', '$routeProvider', '$stateProvider', '$urlRouterProvider', '$logProvider', '$httpProvider', '$provide', function(booksProvider, $routeProvider, $stateProvider, $urlRouterProvider, $logProvider, $httpProvider, $provide) {
 
         $provide.decorator('$log', ['$delegate', 'books', logDecorator]);
 
@@ -35,23 +35,63 @@
 
         $httpProvider.interceptors.push('bookLoggerInterceptor');
 
-        $routeProvider
-            .when('/', {
-                templateUrl: 'app/templates/books.html',
-                controller: 'BooksController',
-                controllerAs: 'books'
+        $stateProvider
+            .state('app', {
+                url: '/',
+                views: {
+                    'header': {
+                        templateUrl: 'app/templates/header.html'
+                    },
+                    'content': {
+                        templateUrl: 'app/templates/books.html',
+                        controller: 'BooksController',
+                        controllerAs: 'books'
+                    },
+                    'footer': {
+                        templateUrl: 'app/templates/footer.html'
+                    }
+                }
             })
-            .when('/AddBook', {
-                templateUrl: 'app/templates/addBook.html',
-                controller: 'AddBookController',
-                controllerAs: 'bookAdder'
+            .state('app.addBook', {
+                url: 'AddBook',
+                views: {
+                    'content@': {
+                        templateUrl: 'app/templates/addBook.html',
+                        controller: 'AddBookController',
+                        controllerAs: 'bookAdder'
+                    }
+                }
             })
-            .when('/EditBook/:bookID', {
-                templateUrl: 'app/templates/editBook.html',
-                controller: 'EditBookController',
-                controllerAs: 'bookEditor'
-            })
-            .otherwise('/');
+            .state('app.editBook', {
+                url: 'EditBook/:bookID',
+                views: {
+                    'content@': {
+                        templateUrl: 'app/templates/editBook.html',
+                        controller: 'EditBookController',
+                        controllerAs: 'bookEditor'
+                    }
+                }
+            });
+
+        $urlRouterProvider.otherwise('/');
+
+        // $routeProvider
+        //     .when('/', {
+        //         templateUrl: 'app/templates/books.html',
+        //         controller: 'BooksController',
+        //         controllerAs: 'books'
+        //     })
+        //     .when('/AddBook', {
+        //         templateUrl: 'app/templates/addBook.html',
+        //         controller: 'AddBookController',
+        //         controllerAs: 'bookAdder'
+        //     })
+        //     .when('/EditBook/:bookID', {
+        //         templateUrl: 'app/templates/editBook.html',
+        //         controller: 'EditBookController',
+        //         controllerAs: 'bookEditor'
+        //     })
+        //     .otherwise('/');
     }]);
 
     function logDecorator($delegate, books) {

@@ -1,27 +1,37 @@
-<h3>Add Book</h3>
-
-<form class="form-horizontal" role="form">
-    <div class="form-group">
-        <label for="bookTitle" class="col-sm-1 control-label">Title</label>
-        <div class="col-sm-4">
-            <input type="text" ng-model="bookAdder.newBook.title" class="form-control" id="bookTitle" placeholder="Title">
+<div class="container margin_60">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 login-box">
+            <div class="text-center">
+                <h3>Add Book</h3>
+            </div>
+            <div class="">&nbsp;</div>
+            <div class="">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="bookTitle" class="col-md-1 col-md-offset-1 control-label">Title</label>
+                        <div class="col-md-8">
+                            <input type="text" ng-model="bookAdder.newBook.title" class="form-control" id="bookTitle" placeholder="Title">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookAuthor" class="col-md-1 col-md-offset-1 control-label">Author</label>
+                        <div class="col-sm-8">
+                            <input type="text" ng-model="bookAdder.newBook.author" class="form-control" id="bookAuthor" placeholder="Author">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookPublished" class="col-md-1 col-md-offset-1 control-label">Year</label>
+                        <div class="col-sm-8">
+                            <input type="text" ng-model="bookAdder.newBook.year_published" class="form-control" id="bookPublished" placeholder="Year Published">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-md-1">
+                            <button class="btn btn-default" ng-click="bookAdder.addBook()">Save</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label for="bookAuthor" class="col-sm-1 control-label">Author</label>
-        <div class="col-sm-4">
-            <input type="text" ng-model="bookAdder.newBook.author" class="form-control" id="bookAuthor" placeholder="Author">
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="bookPublished" class="col-sm-1 control-label">Year</label>
-        <div class="col-sm-4">
-            <input type="text" ng-model="bookAdder.newBook.year_published" class="form-control" id="bookPublished" placeholder="Year Published">
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-1 col-sm-5">
-            <button class="btn btn-default" ng-click="bookAdder.addBook()">Save</button>
-        </div>
-    </div>
-</form>
+</div>

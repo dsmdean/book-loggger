@@ -146,7 +146,7 @@
 
         function transformPostRequest(data, headersGetter) {
             data.newBook = true;
-            console.log(data);
+            // console.log(data);
 
             return JSON.stringify(data);
         }
