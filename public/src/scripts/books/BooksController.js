@@ -1,13 +1,37 @@
 (function() {
     'use strict';
 
-    function BooksController(books, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser) {
+    function BooksController(books, $window, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser, $timeout) {
 
         var vm = this;
 
         vm.appName = books.appName;
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
+        vm.loading = {
+            busy: false,
+            cycle: 1,
+            complete: false
+        };
+
+        vm.loadMoreData = function() {
+            if (vm.loading.cycle * 6 > vm.allBooks.length) {
+                vm.loading.complete = true;
+            }
+            vm.loading.busy = true;
+
+            $timeout(function() {
+                vm.loading.cycle++;
+                vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
+                vm.loading.busy = false;
+            }, 2000);
+        };
+
+        angular.element($window).bind("scroll", function() {
+            if (pageYOffset >= 100) {
+                vm.loadMoreData();
+            }
+        });
 
         function getUserSummarySuccess(summaryData) {
             // $log.log(summaryData);
@@ -21,6 +45,7 @@
 
         function getBooksSuccess(books) {
             vm.allBooks = books;
+            vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
         }
 
         function errorCallback(errorMsg) {
@@ -80,6 +105,6 @@
     }
 
     angular.module('app')
-        .controller('BooksController', ['books', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', BooksController]);
+        .controller('BooksController', ['books', '$window', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', '$timeout', BooksController]);
 
 }());

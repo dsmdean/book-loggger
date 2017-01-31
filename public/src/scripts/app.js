@@ -111,6 +111,26 @@
                         controllerAs: 'bookEditor'
                     }
                 }
+            })
+            .state('app.login', {
+                url: 'login',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/login.html',
+                        controller: 'LoginController',
+                        controllerAs: 'login'
+                    }
+                }
+            })
+            .state('app.register', {
+                url: 'register',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/register.html',
+                        controller: 'RegisterController',
+                        controllerAs: 'register'
+                    }
+                }
             });
 
         $urlRouterProvider.otherwise('/');
