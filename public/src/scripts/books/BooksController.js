@@ -24,7 +24,7 @@
                 vm.loading.cycle++;
                 vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
                 vm.loading.busy = false;
-            }, 2000);
+            }, 500);
         };
 
         angular.element($window).bind("scroll", function() {
@@ -52,28 +52,18 @@
             $log.error('Error Message: ' + errorMsg);
         }
 
-        function getAllBooksComplete() {
-            // $log.info('getAllBooks has completed.');
-        }
-
         dataService.getAllBooks()
             .then(getBooksSuccess)
-            .catch(errorCallback)
-            .finally(getAllBooksComplete);
+            .catch(errorCallback);
 
         function getReadersSuccess(readers) {
             vm.allReaders = readers;
             $log.awesome('All readers retrieved');
         }
 
-        function getAllReadersComplete() {
-            // $log.info('getAllReaders has completed.');
-        }
-
         dataService.getAllReaders()
             .then(getReadersSuccess)
-            .catch(errorCallback)
-            .finally(getAllReadersComplete);
+            .catch(errorCallback);
 
         function deleteBookSuccess(message) {
             $log.info(message);

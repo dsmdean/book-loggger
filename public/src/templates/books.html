@@ -35,7 +35,7 @@
 <h3>All Readers</h3>
 <div>
     <ul>
-        <li ng-repeat="reader in books.allReaders">{{reader.name}} - {{books.getBadge(reader.totalMinutesRead)}}</li>
+        <li ng-repeat="reader in books.allReaders">{{reader.firstname}} {{reader.lastname}} - {{books.getBadge(reader.total_minutes_read)}}</li>
     </ul>
 </div>
 

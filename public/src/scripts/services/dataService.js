@@ -13,6 +13,11 @@
             httpCache.remove(constants.APP_SERVER + '/api/books');
         }
 
+        function deleteAllUsersResponseFromCache() {
+            var httpCache = $cacheFactory.get('$http');
+            httpCache.remove(constants.APP_SERVER + '/api/users');
+        }
+
         function transformGetBooks(data, headersGetter) {
 
             var transformed = angular.fromJson(data);
@@ -123,35 +128,22 @@
                 .catch(deleteBookError);
         }
 
+        function getReadersSuccess(response) {
+            return response.data;
+        }
+
+        function getReadersError(response) {
+            return $q.reject('Error retrieving user(s). (HTTP status: ' + response.status + ')');
+        }
+
         function getAllReaders() {
-
-            var readersArray = [{
-                    reader_id: 1,
-                    name: 'Marie',
-                    weeklyReadingGoal: 315,
-                    totalMinutesRead: 5600
-                },
-                {
-                    reader_id: 2,
-                    name: 'Daniel',
-                    weeklyReadingGoal: 210,
-                    totalMinutesRead: 3000
-                },
-                {
-                    reader_id: 3,
-                    name: 'Lanier',
-                    weeklyReadingGoal: 140,
-                    totalMinutesRead: 600
-                }
-            ];
-
-            var deferred = $q.defer();
-
-            $timeout(function() {
-                deferred.resolve(readersArray);
-            }, 1500);
-
-            return deferred.promise;
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users',
+                    cache: true
+                })
+                .then(getReadersSuccess)
+                .catch(getReadersError);
         }
 
         function getUserSummary() {
@@ -183,7 +175,7 @@
                         var grandTotalMinutes = 0;
 
                         allReaders.forEach(function(currentReader, index, array) {
-                            grandTotalMinutes += currentReader.totalMinutesRead;
+                            grandTotalMinutes += currentReader.total_minutes_read;
                         });
 
                         var summaryData = {
@@ -208,7 +200,9 @@
             updateBook: updateBook,
             addBook: addBook,
             deleteBook: deleteBook,
-            getUserSummary: getUserSummary
+            getUserSummary: getUserSummary,
+            deleteSummaryFromCache: deleteSummaryFromCache,
+            deleteAllUsersResponseFromCache: deleteAllUsersResponseFromCache
         };
     }
 

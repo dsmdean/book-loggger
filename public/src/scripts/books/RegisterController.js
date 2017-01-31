@@ -1,13 +1,14 @@
 (function() {
 
-    function RegisterController($log, authentication) {
+    function RegisterController($log, authentication, $location) {
 
         var vm = this;
 
         vm.registerData = {};
 
-        function registerSuccess(response) {
-            $log.log('Registration succesfull');
+        function registerSuccess(message) {
+            $log.log(message);
+            $location.path('/');
         }
 
         function registerError(errorMessage) {
@@ -22,6 +23,6 @@
     }
 
     angular.module('app')
-        .controller('RegisterController', ['$log', 'authentication', RegisterController]);
+        .controller('RegisterController', ['$log', 'authentication', '$location', RegisterController]);
 
 }());

@@ -16,7 +16,6 @@ db.once('open', function() {
     console.log("Connected correctly to server");
 });
 
-var index = require('./server/routes/index');
 var users = require('./server/routes/users');
 var books = require('./server/routes/books');
 
@@ -34,7 +33,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
 app.use('/api/users', users);
 app.use('/api/books', books);
 

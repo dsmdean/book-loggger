@@ -1,13 +1,27 @@
 (function() {
 
-    function authentication($log) {
+    function authentication($log, constants, dataService, $q, $http) {
 
         function doLogin(loginData) {
             $log.info('Do login with: ' + loginData);
         }
 
-        function register(registerData) {
-            $log.info('Do registration with: ' + registerData);
+        function registerSucces(response) {
+            return 'User added: ' + response.config.data.username;
+        }
+
+        function registerError(response) {
+            return $q.reject('Error registering user. (HTTP status: ' + response.status + ')');
+        }
+
+        function register(newUser) {
+
+            dataService.deleteAllUsersResponseFromCache();
+            dataService.deleteSummaryFromCache();
+
+            return $http.post(constants.APP_SERVER + '/api/users/register', newUser)
+                .then(registerSucces)
+                .catch(registerError);
         }
 
         return {
@@ -17,6 +31,6 @@
     }
 
     angular.module('app')
-        .factory('authentication', ['$log', authentication]);
+        .factory('authentication', ['$log', 'constants', 'dataService', '$q', '$http', authentication]);
 
 }());
