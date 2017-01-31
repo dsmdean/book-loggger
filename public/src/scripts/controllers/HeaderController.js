@@ -1,6 +1,6 @@
 (function() {
 
-    function HeaderController($log, authentication, $location, $rootScope) {
+    function HeaderController($log, authentication, $location, $rootScope, $state, $stateParams) {
 
         var vm = this;
 
@@ -34,7 +34,12 @@
 
         function doLogoutSuccess(message) {
             $log.log(message);
-            $location.path('/');
+
+            $state.transitionTo('app', $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
         }
 
         function doLogoutError(errorMessage) {
@@ -49,6 +54,6 @@
     }
 
     angular.module('app')
-        .controller('HeaderController', ['$log', 'authentication', '$location', '$rootScope', HeaderController]);
+        .controller('HeaderController', ['$log', 'authentication', '$location', '$rootScope', '$state', HeaderController]);
 
 }());

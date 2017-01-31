@@ -15,35 +15,6 @@ userRouter.get('/', function(req, res, next) {
     });
 });
 
-userRouter.route('/:userId')
-    // get a specific user
-    .get(function(req, res, next) {
-        User.findById(req.params.userId, function(err, user) {
-            if (err) next(err);
-            res.json(user);
-        });
-    })
-    // update a specific user
-    .put(function(req, res, next) {
-        User.findByIdAndUpdate(req.params.userId, {
-            $set: req.body
-        }, {
-            new: true
-        }, function(err, user) {
-            if (err) next(err);
-            res.json(user);
-        });
-    })
-    // delete a specific user
-    .delete(function(req, res, next) {
-        User.findById(req.params.userId, function(err, user) {
-            if (err) next(err);
-
-            user.remove({});
-            res.json(user);
-        });
-    });
-
 // // register user
 userRouter.post('/register', function(req, res) {
     User.register(new User({ username: req.body.username }),
@@ -110,6 +81,35 @@ userRouter.get('/logout', function(req, res) {
         status: 'Bye!'
     });
 });
+
+userRouter.route('/:userId')
+    // get a specific user
+    .get(function(req, res, next) {
+        User.findById(req.params.userId, function(err, user) {
+            if (err) next(err);
+            res.json(user);
+        });
+    })
+    // update a specific user
+    .put(function(req, res, next) {
+        User.findByIdAndUpdate(req.params.userId, {
+            $set: req.body
+        }, {
+            new: true
+        }, function(err, user) {
+            if (err) next(err);
+            res.json(user);
+        });
+    })
+    // delete a specific user
+    .delete(function(req, res, next) {
+        User.findById(req.params.userId, function(err, user) {
+            if (err) next(err);
+
+            user.remove({});
+            res.json(user);
+        });
+    });
 
 // export router
 module.exports = userRouter;

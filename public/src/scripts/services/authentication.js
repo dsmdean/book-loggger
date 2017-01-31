@@ -90,7 +90,7 @@
         function logoutSuccess(response) {
             destroyUserCredentials();
 
-            return 'Logged out - ' + response.staus;
+            return 'Logged out - ' + response.data.status;
         }
 
         function logoutError() {
