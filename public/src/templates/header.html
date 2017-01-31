@@ -16,15 +16,15 @@
             <!-- Navbar -->
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a ui-sref="app">Home</a></li>
-                    <li><a ui-sref="app.login">Login</a></li>
-                    <li><a ui-sref="app.register">Register</a></li>
-                    <li class="dropdown" ng-if="loggedIn">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{username}} <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                            <li ng-if="loggedIn"><a href="#" ng-click="logOut()">Logout</a></li>
+                    <li ng-hide="header.loggedIn"><a ui-sref="app.login">Login</a></li>
+                    <li ng-hide="header.loggedIn"><a ui-sref="app.register">Register</a></li>
+                    <li class="dropdown" ng-if="header.loggedIn">
+                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{header.currentUser.firstname}} {{header.currentUser.lastname}} <span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="#" ng-click="header.logOut()">Logout</a></li>
                         </ul>
                     </li>
+                    <li ng-show="header.loggedIn"><a href="" ng-click="header.logOut()">Logout</a></li>
                 </ul>
             </div>
         </div>

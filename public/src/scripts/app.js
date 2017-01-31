@@ -80,7 +80,9 @@
                 url: '/',
                 views: {
                     'header': {
-                        templateUrl: 'templates/header.html'
+                        templateUrl: 'templates/header.html',
+                        controller: 'HeaderController',
+                        controllerAs: 'header'
                     },
                     'content': {
                         templateUrl: 'templates/books.html',

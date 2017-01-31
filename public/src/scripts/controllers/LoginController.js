@@ -1,13 +1,14 @@
 (function() {
 
-    function LoginController($log, authentication) {
+    function LoginController($log, authentication, $location) {
 
         var vm = this;
 
         vm.loginData = {};
 
-        function doLoginSuccess(response) {
-            $log.log('Login succesfull');
+        function doLoginSuccess(message) {
+            $log.log(message);
+            $location.path('/');
         }
 
         function doLoginError(errorMessage) {
@@ -22,6 +23,6 @@
     }
 
     angular.module('app')
-        .controller('LoginController', ['$log', 'authentication', LoginController]);
+        .controller('LoginController', ['$log', 'authentication', '$location', LoginController]);
 
 }());

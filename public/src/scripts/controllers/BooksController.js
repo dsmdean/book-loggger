@@ -24,7 +24,7 @@
                 vm.loading.cycle++;
                 vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
                 vm.loading.busy = false;
-            }, 500);
+            }, 2000);
         };
 
         angular.element($window).bind("scroll", function() {

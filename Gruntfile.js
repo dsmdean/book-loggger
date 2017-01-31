@@ -23,7 +23,7 @@ module.exports = function(grunt) {
             all: {
                 src: [
                     'Gruntfile.js',
-                    'public/src/scripts/books/{,*/}*.js',
+                    'public/src/scripts/controllers/{,*/}*.js',
                     'public/src/scripts/services/{,*/}*.js',
                     'public/src/scripts/app.js'
                 ]
