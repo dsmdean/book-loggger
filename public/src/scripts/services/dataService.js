@@ -146,6 +146,38 @@
                 .catch(getReadersError);
         }
 
+        function sendGetUserError(response) {
+            return $q.reject('Error retrieving user(s). (HTTP status: ' + response.status + ')');
+        }
+
+        function getUserByID(userID) {
+            return $http.get(constants.APP_SERVER + '/api/users/' + userID)
+                .then(sendResponseData)
+                .catch(sendGetUserError);
+        }
+
+        function updateUserSuccess(response) {
+            return 'User updated: ' + response.config.data.username;
+        }
+
+        function updateUserError(response) {
+            return $q.reject('Error updating user. (HTTP status: ' + response.status + ')');
+        }
+
+        function updateUser(user) {
+
+            deleteAllUsersResponseFromCache();
+            deleteSummaryFromCache();
+
+            return $http({
+                    method: 'PUT',
+                    url: constants.APP_SERVER + '/api/users/' + user._id,
+                    data: user
+                })
+                .then(updateUserSuccess)
+                .catch(updateUserError);
+        }
+
         function getUserSummary() {
             var deferred = $q.defer();
 
@@ -197,7 +229,9 @@
             getAllBooks: getAllBooks,
             getAllReaders: getAllReaders,
             getBookByID: getBookByID,
+            getUserByID: getUserByID,
             updateBook: updateBook,
+            updateUser: updateUser,
             addBook: addBook,
             deleteBook: deleteBook,
             getUserSummary: getUserSummary,

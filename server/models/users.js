@@ -23,6 +23,14 @@ var User = new Schema({
         type: Number,
         default: 0
     },
+    booksRead: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Books'
+    }],
+    favoriteBooks: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Books'
+    }],
     admin: {
         type: Boolean,
         default: false

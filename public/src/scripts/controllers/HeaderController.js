@@ -1,4 +1,5 @@
 (function() {
+    'use strict';
 
     function HeaderController($log, authentication, $location, $rootScope, $state, $stateParams) {
 
@@ -8,7 +9,7 @@
         vm.isAdmin = false;
         vm.currentUser = {};
 
-        if (authentication.isAuthenticated()) {
+        function loginSuccess() {
             vm.loggedIn = true;
             vm.currentUser = authentication.getCurrentUser();
 
@@ -20,16 +21,12 @@
 
         }
 
+        if (authentication.isAuthenticated()) {
+            loginSuccess();
+        }
+
         $rootScope.$on('login:Successful', function() {
-            vm.loggedIn = true;
-            vm.currentUser = authentication.getCurrentUser();
-
-            if (authentication.isAdmin()) {
-                vm.isAdmin = true;
-            }
-
-            $location.path("/");
-
+            loginSuccess();
         });
 
         function doLogoutSuccess(message) {

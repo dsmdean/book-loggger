@@ -114,6 +114,16 @@
                     }
                 }
             })
+            .state('app.profile', {
+                url: 'profile',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/profile.html',
+                        controller: 'ProfileController',
+                        controllerAs: 'profile'
+                    }
+                }
+            })
             .state('app.login', {
                 url: 'login',
                 views: {

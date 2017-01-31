@@ -5,8 +5,8 @@
 <div class="all_books">
     <h3>
         All Books&nbsp;
-        <a ui-sref="app.addBook" title="Add New Book"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></a>
-        <a ui-sref="app.editBook({bookID: books.currentUser.lastBookEdited._id})" title="Open Last Edited"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
+        <a ng-show="books.isAuthenticated" ui-sref="app.addBook" title="Add New Book"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></a>
+        <a ng-show="books.isAuthenticated" ui-sref="app.editBook({bookID: books.currentUser.lastBookEdited._id})" title="Open Last Edited"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
 
         <div class="pull-right">
             <!--<i class="fa fa-search" aria-hidden="true"></i>-->
@@ -31,15 +31,3 @@
     <div ng-show='books.loading.busy && books.loading.complete'><img width="20px" src="http://intuitglobal.intuit.com/delivery/cms/prod/sites/default/intuit.ca/images/quickbooks-sui-images/loader.gif" /> No more data...<br/><br/></div>
     <div><button class="btn btn-default" ng-click="books.loadMoreData()">Load more...</button></div>
 </center>
-
-<h3>All Readers</h3>
-<div>
-    <ul>
-        <li ng-repeat="reader in books.allReaders">{{reader.firstname}} {{reader.lastname}} - {{books.getBadge(reader.total_minutes_read)}}</li>
-    </ul>
-</div>
-
-<h3>Current Favorite Book</h3>
-<div>
-    {{books.favoriteBook}}
-</div>

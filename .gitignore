@@ -1,4 +1,4 @@
-/.tmp
+/.tmp/
 /node_modules
 /public/src/bower_components
 /public/dist

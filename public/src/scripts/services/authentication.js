@@ -1,4 +1,5 @@
 (function() {
+    'use strict';
 
     function authentication($log, constants, dataService, $q, $http, $localStorage, $rootScope) {
 
@@ -6,19 +7,7 @@
         var loggedIn = false;
         var currentUser = {};
         var admin = false;
-        var authToken = undefined;
-
-        function loadUserCredentials() {
-            var credentials = $localStorage.getObject(TOKEN_KEY, '{}');
-            if (credentials.username != undefined) {
-                useCredentials(credentials);
-            }
-        }
-
-        function storeUserCredentials(credentials) {
-            $localStorage.storeObject(TOKEN_KEY, credentials);
-            useCredentials(credentials);
-        }
+        var authToken;
 
         function useCredentials(credentials) {
             loggedIn = true;
@@ -26,11 +15,23 @@
             authToken = credentials.token;
 
             if (credentials.admin) {
-                isAdmin = true;
+                admin = true;
             }
 
             // Set the token as header for your requests!
             $http.defaults.headers.common['x-access-token'] = authToken;
+        }
+
+        function loadUserCredentials() {
+            var credentials = $localStorage.getObject(TOKEN_KEY, '{}');
+            if (credentials.username !== undefined) {
+                useCredentials(credentials);
+            }
+        }
+
+        function storeUserCredentials(credentials) {
+            $localStorage.storeObject(TOKEN_KEY, credentials);
+            useCredentials(credentials);
         }
 
         function destroyUserCredentials() {
@@ -44,6 +45,7 @@
 
         function loginSuccess(response) {
             loggedIn = true;
+            currentUser = response.data.user;
 
             if (response.data.user.admin) {
                 storeUserCredentials({ id: response.data.user._id, firstname: response.data.user.firstname, lastname: response.data.user.lastname, username: response.data.user.username, token: response.data.token, admin: response.data.user.admin });
@@ -93,7 +95,7 @@
             return 'Logged out - ' + response.data.status;
         }
 
-        function logoutError() {
+        function logoutError(response) {
             return $q.reject('Error logging out. (HTTP status: ' + response.status + ')');
         }
 
@@ -101,8 +103,6 @@
             return $http.get(constants.APP_SERVER + '/api/users/logout')
                 .then(logoutSuccess)
                 .catch(logoutError);
-
-            destroyUserCredentials();
         }
 
         function isAuthenticated() {

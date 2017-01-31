@@ -21,7 +21,7 @@
                     <li class="dropdown" ng-if="header.loggedIn">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{header.currentUser.firstname}} {{header.currentUser.lastname}} <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#">Profile</a></li>
+                            <li><a ui-sref="app.profile">Profile</a></li>
                             <li><a href="#">Books Read</a></li>
                             <li><a href="#">Favorite Books</a></li>
                             <li><a href="#" ng-click="header.logOut()">Logout</a></li>

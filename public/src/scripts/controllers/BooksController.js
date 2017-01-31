@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function BooksController(books, $window, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser, $timeout) {
+    function BooksController(books, $window, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser, $timeout, authentication) {
 
         var vm = this;
 
@@ -28,7 +28,7 @@
         };
 
         angular.element($window).bind("scroll", function() {
-            if (pageYOffset >= 100) {
+            if (this.pageYOffset >= 100) {
                 vm.loadMoreData();
             }
         });
@@ -54,15 +54,6 @@
 
         dataService.getAllBooks()
             .then(getBooksSuccess)
-            .catch(errorCallback);
-
-        function getReadersSuccess(readers) {
-            vm.allReaders = readers;
-            $log.awesome('All readers retrieved');
-        }
-
-        dataService.getAllReaders()
-            .then(getReadersSuccess)
             .catch(errorCallback);
 
         function deleteBookSuccess(message) {
@@ -92,9 +83,11 @@
 
         // vm.lastEdited = $cookieStore.get('lastEdited');
         vm.currentUser = currentUser;
+
+        vm.isAuthenticated = authentication.isAuthenticated();
     }
 
     angular.module('app')
-        .controller('BooksController', ['books', '$window', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', '$timeout', BooksController]);
+        .controller('BooksController', ['books', '$window', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', '$timeout', 'authentication', BooksController]);
 
 }());
