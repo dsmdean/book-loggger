@@ -1,13 +1,6 @@
-<div class="summary pull-right">
-    {{books.summaryData.bookCount}} Books - {{books.summaryData.readerCount}} Readers - {{books.summaryData.grandTotalMinutes}} Total Minutes Read
-</div>
-
 <div class="all_books">
     <h3>
-        All Books&nbsp;
-        <a ng-show="books.isAuthenticated" ui-sref="app.addBook" title="Add New Book"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></a>
-        <a ng-show="books.isAuthenticated" ui-sref="app.editBook({bookID: books.currentUser.lastBookEdited._id})" title="Open Last Edited"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
-
+        Books Read&nbsp;
         <div class="pull-right">
             <!--<i class="fa fa-search" aria-hidden="true"></i>-->
             <input type="text" class="form-control" name="search" placeholder="Search.." ng-model="books.search">
@@ -21,17 +14,6 @@
         </div>
 
         <h4 style="margin-top:19px;">{{book.title}} - <small class="">{{book.author}}</small></h4>
-
-        <div ng-show="books.isAuthenticated">
-            <div ng-show="books.isAdmin">
-                <a ui-sref="app.editBook({bookID: book._id})">Edit</a> |
-                <a ng-click="books.deleteBook(book._id)">Delete</a>
-            </div>
-            <div ng-hide="books.isAdmin">
-                <a ui-sref="app.viewBook({bookID: book._id})">View</a> |
-                <a href="#" ng-click="books.setAsRead(book._id)">Read Book</a>
-            </div>
-        </div>
     </div>
 </div>
 <center style="margin-top: 20px;">

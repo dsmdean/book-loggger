@@ -95,7 +95,7 @@
                 }
             })
             .state('app.addBook', {
-                url: 'AddBook',
+                url: 'addBook',
                 views: {
                     'content@': {
                         templateUrl: 'templates/addBook.html',
@@ -105,12 +105,22 @@
                 }
             })
             .state('app.editBook', {
-                url: 'EditBook/:bookID',
+                url: 'editBook/:bookID',
                 views: {
                     'content@': {
                         templateUrl: 'templates/editBook.html',
                         controller: 'EditBookController',
                         controllerAs: 'bookEditor'
+                    }
+                }
+            })
+            .state('app.viewBook', {
+                url: 'viewBook/:bookID',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/viewBook.html',
+                        controller: 'ViewBookController',
+                        controllerAs: 'book'
                     }
                 }
             })
@@ -121,6 +131,26 @@
                         templateUrl: 'templates/profile.html',
                         controller: 'ProfileController',
                         controllerAs: 'profile'
+                    }
+                }
+            })
+            .state('app.readBooks', {
+                url: 'readBooks',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/booksRead.html',
+                        controller: 'BooksReadController',
+                        controllerAs: 'books'
+                    }
+                }
+            })
+            .state('app.favoriteBooks', {
+                url: 'favoriteBooks',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/favoriteBooks.html',
+                        controller: 'FavoriteBooksController',
+                        controllerAs: 'books'
                     }
                 }
             })

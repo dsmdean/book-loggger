@@ -111,5 +111,55 @@ userRouter.route('/:userId')
         });
     });
 
+userRouter.route('/:userId/booksRead')
+    // get books read from a specific user
+    .get(function(req, res, next) {
+        User.findById(req.params.userId)
+            .populate('booksRead')
+            .exec(function(err, user) {
+                if (err) next(err);
+
+                res.json(user.booksRead);
+            });
+    })
+    // save book read for a specific user
+    .post(function(req, res, next) {
+        User.findById(req.params.userId, function(err, user) {
+            if (err) next(err);
+
+            user.booksRead.push(req.body.bookID);
+            user.save(function(err, user) {
+                if (err) next(err);
+
+                res.json('Added the book to books read. ID: ' + req.body.bookID);
+            });
+        });
+    });
+
+userRouter.route('/:userId/favoriteBooks')
+    // get books read from a specific user
+    .get(function(req, res, next) {
+        User.findById(req.params.userId)
+            .populate('favoriteBooks')
+            .exec(function(err, user) {
+                if (err) next(err);
+
+                res.json(user.favoriteBooks);
+            });
+    })
+    // save book read for a specific user
+    .post(function(req, res, next) {
+        User.findById(req.params.userId, function(err, user) {
+            if (err) next(err);
+
+            user.favoriteBooks.push(req.body.bookID);
+            user.save(function(err, user) {
+                if (err) next(err);
+
+                res.json('Added the book to books read. ID: ' + req.body.bookID);
+            });
+        });
+    });
+
 // export router
 module.exports = userRouter;

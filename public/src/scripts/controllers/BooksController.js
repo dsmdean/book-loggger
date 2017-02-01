@@ -77,6 +77,16 @@
                 .catch(deleteBookError);
         };
 
+        function addBookSuccess(message) {
+            $log.log(message);
+        }
+
+        vm.setAsRead = function(bookID) {
+            dataService.addReadBook(authentication.getCurrentUser().id, { bookID: bookID })
+                .then(addBookSuccess)
+                .catch(errorCallback);
+        };
+
         vm.getBadge = badgeService.retrieveBadge;
 
         vm.favoriteBook = $cookies.favoriteBook;
@@ -85,6 +95,7 @@
         vm.currentUser = currentUser;
 
         vm.isAuthenticated = authentication.isAuthenticated();
+        vm.isAdmin = authentication.isAdmin();
     }
 
     angular.module('app')

@@ -1,0 +1,37 @@
+<div class="container margin_60">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2 login-box">
+            <div class="text-center">
+                <h3>View Book</h3>
+            </div>
+            <div class="">&nbsp;</div>
+            <div class="">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="bookTitle" class="col-md-1 col-md-offset-1 control-label">Title</label>
+                        <div class="col-md-8">
+                            <input ng-model="book.currentBook.title" type="text" class="form-control" id="bookTitle" placeholder="Title" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookAuthor" class="col-md-1 col-md-offset-1 control-label">Author</label>
+                        <div class="col-md-8">
+                            <input ng-model="book.currentBook.author" type="text" class="form-control" id="bookAuthor" placeholder="Author" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookPublished" class="col-md-1 col-md-offset-1 control-label">Year</label>
+                        <div class="col-md-8">
+                            <input ng-model="book.currentBook.year_published" type="text" class="form-control" id="bookPublished" placeholder="Year Published" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-3">
+                            <button class="btn btn-default" ng-click="book.setAsFavorite()">Set as Favorite</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -52,6 +52,56 @@
                 .catch(sendGetBooksError);
         }
 
+        function getReadBooks(userID) {
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users/' + userID + '/booksRead',
+                    cache: true
+                })
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
+
+        function addReadBookSucces(response) {
+            return 'Book added to read list.';
+        }
+
+        function addReadBookError(response) {
+            return $q.reject('Error adding book to favorite. (HTTP status: ' + response.status + ')');
+        }
+
+        function addReadBook(userID, book) {
+
+            return $http.post(constants.APP_SERVER + '/api/users/' + userID + '/booksRead', book)
+                .then(addReadBookSucces)
+                .catch(addReadBookError);
+        }
+
+        function getFavoriteBooks(userID) {
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users/' + userID + '/favoriteBooks',
+                    cache: true
+                })
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
+
+        function addFavoriteBookSucces(response) {
+            return 'Book added to favorite.';
+        }
+
+        function addFavoriteBookError(response) {
+            return $q.reject('Error adding book to favorite. (HTTP status: ' + response.status + ')');
+        }
+
+        function addFavoriteBook(userID, book) {
+
+            return $http.post(constants.APP_SERVER + '/api/users/' + userID + '/favoriteBooks', book)
+                .then(addFavoriteBookSucces)
+                .catch(addFavoriteBookError);
+        }
+
         function getBookByID(bookID) {
             return $http.get(constants.APP_SERVER + '/api/books/' + bookID)
                 .then(sendResponseData)
@@ -234,6 +284,10 @@
             updateUser: updateUser,
             addBook: addBook,
             deleteBook: deleteBook,
+            getReadBooks: getReadBooks,
+            addReadBook: addReadBook,
+            getFavoriteBooks: getFavoriteBooks,
+            addFavoriteBook: addFavoriteBook,
             getUserSummary: getUserSummary,
             deleteSummaryFromCache: deleteSummaryFromCache,
             deleteAllUsersResponseFromCache: deleteAllUsersResponseFromCache
