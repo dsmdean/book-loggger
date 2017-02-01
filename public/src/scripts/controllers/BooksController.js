@@ -1,11 +1,12 @@
 (function() {
     'use strict';
 
-    function BooksController(books, $window, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser, $timeout, authentication) {
+    function BooksController($window, dataService, $cookieStore, $log, $state, $stateParams, currentUser, $timeout, authentication, bookDataService, userDataService) {
 
         var vm = this;
 
-        vm.appName = books.appName;
+        vm.isAuthenticated = authentication.isAuthenticated();
+        vm.isAdmin = authentication.isAdmin();
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
         vm.loading = {
@@ -24,7 +25,7 @@
                 vm.loading.cycle++;
                 vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
                 vm.loading.busy = false;
-            }, 2000);
+            }, 500);
         };
 
         angular.element($window).bind("scroll", function() {
@@ -52,7 +53,7 @@
             $log.error('Error Message: ' + errorMsg);
         }
 
-        dataService.getAllBooks()
+        bookDataService.getAllBooks()
             .then(getBooksSuccess)
             .catch(errorCallback);
 
@@ -72,7 +73,7 @@
         }
 
         vm.deleteBook = function(bookID) {
-            dataService.deleteBook(bookID)
+            bookDataService.deleteBook(bookID)
                 .then(deleteBookSuccess)
                 .catch(deleteBookError);
         };
@@ -82,23 +83,16 @@
         }
 
         vm.setAsRead = function(bookID) {
-            dataService.addReadBook(authentication.getCurrentUser().id, { bookID: bookID })
+            userDataService.addReadBook(authentication.getCurrentUser().id, { bookID: bookID })
                 .then(addBookSuccess)
                 .catch(errorCallback);
         };
 
-        vm.getBadge = badgeService.retrieveBadge;
-
-        vm.favoriteBook = $cookies.favoriteBook;
-
         // vm.lastEdited = $cookieStore.get('lastEdited');
         vm.currentUser = currentUser;
-
-        vm.isAuthenticated = authentication.isAuthenticated();
-        vm.isAdmin = authentication.isAdmin();
     }
 
     angular.module('app')
-        .controller('BooksController', ['books', '$window', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', '$timeout', 'authentication', BooksController]);
+        .controller('BooksController', ['$window', 'dataService', '$cookieStore', '$log', '$state', '$stateParams', 'currentUser', '$timeout', 'authentication', 'bookDataService', 'userDataService', BooksController]);
 
 }());

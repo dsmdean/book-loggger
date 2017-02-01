@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function AddBookController($log, $location, dataService) {
+    function AddBookController($log, $location, bookDataService) {
         var vm = this;
 
         vm.newBook = {};
@@ -16,13 +16,13 @@
         }
 
         vm.addBook = function() {
-            dataService.addBook(vm.newBook)
+            bookDataService.addBook(vm.newBook)
                 .then(addBookSuccess)
                 .catch(addBookError);
         };
     }
 
     angular.module('app')
-        .controller('AddBookController', ['$log', '$location', 'dataService', AddBookController]);
+        .controller('AddBookController', ['$log', '$location', 'bookDataService', AddBookController]);
 
 }());

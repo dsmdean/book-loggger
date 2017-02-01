@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function EditBookController($routeParams, $stateParams, books, $cookies, $cookieStore, dataService, $log, $location, BooksResource, currentUser) {
+    function EditBookController($stateParams, $cookies, $log, $location, currentUser, bookDataService) {
         var vm = this;
 
         // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
@@ -17,7 +17,7 @@
             $log.error(reason);
         }
 
-        dataService.getBookByID($stateParams.bookID)
+        bookDataService.getBookByID($stateParams.bookID)
             .then(getBookSuccess)
             .catch(getBookError);
 
@@ -31,7 +31,7 @@
         }
 
         vm.saveBook = function() {
-            dataService.updateBook(vm.currentBook)
+            bookDataService.updateBook(vm.currentBook)
                 .then(updateBookSuccess)
                 .catch(updateBookError);
 
@@ -45,6 +45,6 @@
     }
 
     angular.module('app')
-        .controller('EditBookController', ['$routeParams', '$stateParams', 'books', '$cookies', '$cookieStore', 'dataService', '$log', '$location', 'BooksResource', 'currentUser', EditBookController]);
+        .controller('EditBookController', ['$stateParams', '$cookies', '$log', '$location', 'currentUser', 'bookDataService', EditBookController]);
 
 }());

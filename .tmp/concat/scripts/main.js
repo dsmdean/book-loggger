@@ -32158,7 +32158,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
                 }
             })
             .state('app.addBook', {
-                url: 'AddBook',
+                url: 'addBook',
                 views: {
                     'content@': {
                         templateUrl: 'templates/addBook.html',
@@ -32168,12 +32168,52 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
                 }
             })
             .state('app.editBook', {
-                url: 'EditBook/:bookID',
+                url: 'editBook/:bookID',
                 views: {
                     'content@': {
                         templateUrl: 'templates/editBook.html',
                         controller: 'EditBookController',
                         controllerAs: 'bookEditor'
+                    }
+                }
+            })
+            .state('app.viewBook', {
+                url: 'viewBook/:bookID',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/viewBook.html',
+                        controller: 'ViewBookController',
+                        controllerAs: 'book'
+                    }
+                }
+            })
+            .state('app.profile', {
+                url: 'profile',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/profile.html',
+                        controller: 'ProfileController',
+                        controllerAs: 'profile'
+                    }
+                }
+            })
+            .state('app.readBooks', {
+                url: 'readBooks',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/booksRead.html',
+                        controller: 'BooksReadController',
+                        controllerAs: 'books'
+                    }
+                }
+            })
+            .state('app.favoriteBooks', {
+                url: 'favoriteBooks',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/favoriteBooks.html',
+                        controller: 'FavoriteBooksController',
+                        controllerAs: 'books'
                     }
                 }
             })
@@ -32242,11 +32282,12 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 }());;(function() {
     'use strict';
 
-    function BooksController(books, $window, dataService, logger, badgeService, $q, $cookies, $cookieStore, $log, $route, $state, $stateParams, BooksResource, currentUser, $timeout) {
+    function BooksController($window, dataService, $cookieStore, $log, $state, $stateParams, currentUser, $timeout, authentication, bookDataService, userDataService) {
 
         var vm = this;
 
-        vm.appName = books.appName;
+        vm.isAuthenticated = authentication.isAuthenticated();
+        vm.isAdmin = authentication.isAdmin();
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
         vm.loading = {
@@ -32265,7 +32306,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
                 vm.loading.cycle++;
                 vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
                 vm.loading.busy = false;
-            }, 2000);
+            }, 500);
         };
 
         angular.element($window).bind("scroll", function() {
@@ -32293,17 +32334,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             $log.error('Error Message: ' + errorMsg);
         }
 
-        dataService.getAllBooks()
+        bookDataService.getAllBooks()
             .then(getBooksSuccess)
-            .catch(errorCallback);
-
-        function getReadersSuccess(readers) {
-            vm.allReaders = readers;
-            $log.awesome('All readers retrieved');
-        }
-
-        dataService.getAllReaders()
-            .then(getReadersSuccess)
             .catch(errorCallback);
 
         function deleteBookSuccess(message) {
@@ -32322,26 +32354,32 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         }
 
         vm.deleteBook = function(bookID) {
-            dataService.deleteBook(bookID)
+            bookDataService.deleteBook(bookID)
                 .then(deleteBookSuccess)
                 .catch(deleteBookError);
         };
 
-        vm.getBadge = badgeService.retrieveBadge;
+        function addBookSuccess(message) {
+            $log.log(message);
+        }
 
-        vm.favoriteBook = $cookies.favoriteBook;
+        vm.setAsRead = function(bookID) {
+            userDataService.addReadBook(authentication.getCurrentUser().id, { bookID: bookID })
+                .then(addBookSuccess)
+                .catch(errorCallback);
+        };
 
         // vm.lastEdited = $cookieStore.get('lastEdited');
         vm.currentUser = currentUser;
     }
 
     angular.module('app')
-        .controller('BooksController', ['books', '$window', 'dataService', 'logger', 'badgeService', '$q', '$cookies', '$cookieStore', '$log', '$route', '$state', '$stateParams', 'BooksResource', 'currentUser', '$timeout', BooksController]);
+        .controller('BooksController', ['$window', 'dataService', '$cookieStore', '$log', '$state', '$stateParams', 'currentUser', '$timeout', 'authentication', 'bookDataService', 'userDataService', BooksController]);
 
 }());;(function() {
     'use strict';
 
-    function AddBookController($log, $location, dataService) {
+    function AddBookController($log, $location, bookDataService) {
         var vm = this;
 
         vm.newBook = {};
@@ -32356,19 +32394,19 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         }
 
         vm.addBook = function() {
-            dataService.addBook(vm.newBook)
+            bookDataService.addBook(vm.newBook)
                 .then(addBookSuccess)
                 .catch(addBookError);
         };
     }
 
     angular.module('app')
-        .controller('AddBookController', ['$log', '$location', 'dataService', AddBookController]);
+        .controller('AddBookController', ['$log', '$location', 'bookDataService', AddBookController]);
 
 }());;(function() {
     'use strict';
 
-    function EditBookController($routeParams, $stateParams, books, $cookies, $cookieStore, dataService, $log, $location, BooksResource, currentUser) {
+    function EditBookController($stateParams, $cookies, $log, $location, currentUser, bookDataService) {
         var vm = this;
 
         // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
@@ -32384,7 +32422,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             $log.error(reason);
         }
 
-        dataService.getBookByID($stateParams.bookID)
+        bookDataService.getBookByID($stateParams.bookID)
             .then(getBookSuccess)
             .catch(getBookError);
 
@@ -32398,7 +32436,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         }
 
         vm.saveBook = function() {
-            dataService.updateBook(vm.currentBook)
+            bookDataService.updateBook(vm.currentBook)
                 .then(updateBookSuccess)
                 .catch(updateBookError);
 
@@ -32412,7 +32450,48 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
     }
 
     angular.module('app')
-        .controller('EditBookController', ['$routeParams', '$stateParams', 'books', '$cookies', '$cookieStore', 'dataService', '$log', '$location', 'BooksResource', 'currentUser', EditBookController]);
+        .controller('EditBookController', ['$stateParams', '$cookies', '$log', '$location', 'currentUser', 'bookDataService', EditBookController]);
+
+}());;(function() {
+    'use strict';
+
+    function ViewBookController($stateParams, $cookieStore, userDataService, bookDataService, $log, currentUser, authentication) {
+        var vm = this;
+
+        // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
+        // $log.log(vm.currentBook);
+
+        function getBookSuccess(book) {
+            vm.currentBook = book;
+            // $cookieStore.put('lastEdited', vm.currentBook);
+            currentUser.lastBookEdited = vm.currentBook;
+        }
+
+        function getBookError(reason) {
+            $log.error(reason);
+        }
+
+        bookDataService.getBookByID($stateParams.bookID)
+            .then(getBookSuccess)
+            .catch(getBookError);
+
+        function addBookSuccess(message) {
+            $log.log(message);
+        }
+
+        function errorCallback(errorMsg) {
+            $log.error('Error Message: ' + errorMsg);
+        }
+
+        vm.setAsFavorite = function() {
+            userDataService.addFavoriteBook(authentication.getCurrentUser().id, { bookID: vm.currentBook._id })
+                .then(addBookSuccess)
+                .catch(errorCallback);
+        };
+    }
+
+    angular.module('app')
+        .controller('ViewBookController', ['$stateParams', '$cookieStore', 'userDataService', 'bookDataService', '$log', 'currentUser', 'authentication', ViewBookController]);
 
 }());;(function() {
     'use strict';
@@ -32481,7 +32560,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         vm.isAdmin = false;
         vm.currentUser = {};
 
-        if (authentication.isAuthenticated()) {
+        function loginSuccess() {
             vm.loggedIn = true;
             vm.currentUser = authentication.getCurrentUser();
 
@@ -32493,16 +32572,12 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
         }
 
+        if (authentication.isAuthenticated()) {
+            loginSuccess();
+        }
+
         $rootScope.$on('login:Successful', function() {
-            vm.loggedIn = true;
-            vm.currentUser = authentication.getCurrentUser();
-
-            if (authentication.isAdmin()) {
-                vm.isAdmin = true;
-            }
-
-            $location.path("/");
-
+            loginSuccess();
         });
 
         function doLogoutSuccess(message) {
@@ -32532,150 +32607,148 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 }());;(function() {
     'use strict';
 
-    function dataService($q, $timeout, $http, constants, $cacheFactory) {
+    function ProfileController($log, userDataService, authentication) {
+        var vm = this;
 
-        function deleteSummaryFromCache() {
-            var dataCache = $cacheFactory.get('bookLoggerCache');
-            dataCache.remove('summary');
+        function getUserSuccess(user) {
+            vm.currentUser = user;
         }
 
-        function deleteAllBooksResponseFromCache() {
-            var httpCache = $cacheFactory.get('$http');
-            httpCache.remove(constants.APP_SERVER + '/api/books');
+        function getUserError(reason) {
+            $log.error(reason);
         }
 
-        function deleteAllUsersResponseFromCache() {
-            var httpCache = $cacheFactory.get('$http');
-            httpCache.remove(constants.APP_SERVER + '/api/users');
+        userDataService.getUserByID(authentication.getCurrentUser().id)
+            .then(getUserSuccess)
+            .catch(getUserError);
+
+        function updateUserSuccess(message) {
+            $log.log(message);
         }
 
-        function transformGetBooks(data, headersGetter) {
-
-            var transformed = angular.fromJson(data);
-
-            transformed.forEach(function(currentValue, index, array) {
-                currentValue.dateDownloaded = new Date();
-            });
-
-            // console.log(transformed);
-            return transformed;
+        function updateUserError(errorMessage) {
+            $log.log(errorMessage);
         }
 
-        function sendResponseData(response) {
-            return response.data;
+        vm.updateUser = function() {
+            userDataService.updateUser(vm.currentUser)
+                .then(updateUserSuccess)
+                .catch(updateUserError);
+        };
+    }
+
+    angular.module('app')
+        .controller('ProfileController', ['$log', 'userDataService', 'authentication', ProfileController]);
+
+}());;(function() {
+    'use strict';
+
+    function BooksReadController($window, $log, $timeout, authentication, userDataService) {
+
+        var vm = this;
+
+        vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
+        vm.search = "";
+        vm.loading = {
+            busy: false,
+            cycle: 1,
+            complete: false
+        };
+
+        vm.loadMoreData = function() {
+            if (vm.loading.cycle * 6 > vm.allBooks.length) {
+                vm.loading.complete = true;
+            }
+            vm.loading.busy = true;
+
+            $timeout(function() {
+                vm.loading.cycle++;
+                vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
+                vm.loading.busy = false;
+            }, 500);
+        };
+
+        angular.element($window).bind("scroll", function() {
+            if (this.pageYOffset >= 100) {
+                vm.loadMoreData();
+            }
+        });
+
+        function getBooksSuccess(books) {
+            vm.allBooks = books;
+            vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
         }
 
-        function sendGetBooksError(response) {
-            return $q.reject('Error retrieving book(s). (HTTP status: ' + response.status + ')');
+        function errorCallback(errorMsg) {
+            $log.error('Error Message: ' + errorMsg);
         }
 
-        function getAllBooks() {
-            return $http({
-                    method: 'GET',
-                    url: constants.APP_SERVER + '/api/books',
-                    headers: {
-                        'PS-BookLogger-Version': constants.APP_VERSION
-                    },
-                    transformResponse: transformGetBooks,
-                    cache: true
-                })
-                .then(sendResponseData)
-                .catch(sendGetBooksError);
+        userDataService.getReadBooks(authentication.getCurrentUser().id)
+            .then(getBooksSuccess)
+            .catch(errorCallback);
+
+        vm.isAuthenticated = authentication.isAuthenticated();
+    }
+
+    angular.module('app')
+        .controller('BooksReadController', ['$window', '$log', '$timeout', 'authentication', 'userDataService', BooksReadController]);
+
+}());;(function() {
+    'use strict';
+
+    function FavoriteBooksController($window, $log, $timeout, authentication, userDataService) {
+
+        var vm = this;
+
+        vm.isAuthenticated = authentication.isAuthenticated();
+        vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
+        vm.search = "";
+        vm.loading = {
+            busy: false,
+            cycle: 1,
+            complete: false
+        };
+
+        vm.loadMoreData = function() {
+            if (vm.loading.cycle * 6 > vm.allBooks.length) {
+                vm.loading.complete = true;
+            }
+            vm.loading.busy = true;
+
+            $timeout(function() {
+                vm.loading.cycle++;
+                vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
+                vm.loading.busy = false;
+            }, 2000);
+        };
+
+        angular.element($window).bind("scroll", function() {
+            if (this.pageYOffset >= 100) {
+                vm.loadMoreData();
+            }
+        });
+
+        function getBooksSuccess(books) {
+            vm.allBooks = books;
+            vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
         }
 
-        function getBookByID(bookID) {
-            return $http.get(constants.APP_SERVER + '/api/books/' + bookID)
-                .then(sendResponseData)
-                .catch(sendGetBooksError);
+        function errorCallback(errorMsg) {
+            $log.error('Error Message: ' + errorMsg);
         }
 
-        function updateBookSuccess(response) {
-            return 'Book updated: ' + response.config.data.title;
-        }
+        userDataService.getFavoriteBooks(authentication.getCurrentUser().id)
+            .then(getBooksSuccess)
+            .catch(errorCallback);
+    }
 
-        function updateBookError(response) {
-            return $q.reject('Error updating book. (HTTP status: ' + response.status + ')');
-        }
+    angular.module('app')
+        .controller('FavoriteBooksController', ['$window', '$log', '$timeout', 'authentication', 'userDataService', FavoriteBooksController]);
 
-        function updateBook(book) {
+}());;(function() {
+    'use strict';
 
-            deleteAllBooksResponseFromCache();
-            deleteSummaryFromCache();
-
-            return $http({
-                    method: 'PUT',
-                    url: constants.APP_SERVER + '/api/books/' + book._id,
-                    data: book
-                })
-                .then(updateBookSuccess)
-                .catch(updateBookError);
-        }
-
-        function transformPostRequest(data, headersGetter) {
-            data.newBook = true;
-            // console.log(data);
-
-            return JSON.stringify(data);
-        }
-
-        function addBookSucces(response) {
-            return 'Book added: ' + response.config.data.title;
-        }
-
-        function addBookError(response) {
-            return $q.reject('Error adding book. (HTTP status: ' + response.status + ')');
-        }
-
-        function addBook(newBook) {
-
-            deleteAllBooksResponseFromCache();
-            deleteSummaryFromCache();
-
-            return $http.post(constants.APP_SERVER + '/api/books', newBook, {
-                    transformRequest: transformPostRequest
-                })
-                .then(addBookSucces)
-                .catch(addBookError);
-        }
-
-        function deleteBookSuccess(response) {
-            return 'Book deleted.';
-        }
-
-        function deleteBookError(response) {
-            return $q.reject('Error deleting book. (HTTP status: ' + response.status + ')');
-        }
-
-        function deleteBook(bookID) {
-
-            deleteAllBooksResponseFromCache();
-            deleteSummaryFromCache();
-
-            return $http({
-                    method: 'DELETE',
-                    url: constants.APP_SERVER + '/api/books/' + bookID
-                })
-                .then(deleteBookSuccess)
-                .catch(deleteBookError);
-        }
-
-        function getReadersSuccess(response) {
-            return response.data;
-        }
-
-        function getReadersError(response) {
-            return $q.reject('Error retrieving user(s). (HTTP status: ' + response.status + ')');
-        }
-
-        function getAllReaders() {
-            return $http({
-                    method: 'GET',
-                    url: constants.APP_SERVER + '/api/users',
-                    cache: true
-                })
-                .then(getReadersSuccess)
-                .catch(getReadersError);
-        }
+    function dataService($q, $cacheFactory, bookDataService, userDataService) {
 
         function getUserSummary() {
             var deferred = $q.defer();
@@ -32694,8 +32767,8 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
             } else {
                 // console.log('gathering new summary data');
 
-                var booksPromise = getAllBooks();
-                var readersPromise = getAllReaders();
+                var booksPromise = bookDataService.getAllBooks();
+                var readersPromise = userDataService.getAllUsers();
 
                 $q.all([booksPromise, readersPromise])
                     .then(function(bookLoggerData) {
@@ -32725,20 +32798,12 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
         }
 
         return {
-            getAllBooks: getAllBooks,
-            getAllReaders: getAllReaders,
-            getBookByID: getBookByID,
-            updateBook: updateBook,
-            addBook: addBook,
-            deleteBook: deleteBook,
-            getUserSummary: getUserSummary,
-            deleteSummaryFromCache: deleteSummaryFromCache,
-            deleteAllUsersResponseFromCache: deleteAllUsersResponseFromCache
+            getUserSummary: getUserSummary
         };
     }
 
     angular.module('app')
-        .factory('dataService', ['$q', '$timeout', '$http', 'constants', '$cacheFactory', dataService]);
+        .factory('dataService', ['$q', '$cacheFactory', 'bookDataService', 'userDataService', dataService]);
 
 }());;(function() {
     'use strict';
@@ -32826,18 +32891,6 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 }());;(function() {
     'use strict';
 
-    function BooksResource($resource, constants) {
-        return $resource(constants.APP_SERVER + '/api/books/:bookID', { bookID: '@_id' }, {
-            update: { method: 'PUT' }
-        });
-    }
-
-    angular.module('app')
-        .factory('BooksResource', ['$resource', 'constants', BooksResource]);
-
-}());;(function() {
-    'use strict';
-
     function currentUser() {
 
         var lastBookEdited = {};
@@ -32853,7 +32906,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 }());;(function() {
     'use strict';
 
-    function authentication($log, constants, dataService, $q, $http, $localStorage, $rootScope) {
+    function authentication(constants, $q, $http, $localStorage, $rootScope, $cacheFactory) {
 
         var TOKEN_KEY = 'Token';
         var loggedIn = false;
@@ -32897,6 +32950,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
         function loginSuccess(response) {
             loggedIn = true;
+            currentUser = response.data.user;
 
             if (response.data.user.admin) {
                 storeUserCredentials({ id: response.data.user._id, firstname: response.data.user.firstname, lastname: response.data.user.lastname, username: response.data.user.username, token: response.data.token, admin: response.data.user.admin });
@@ -32932,8 +32986,14 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
         function register(newUser) {
 
-            dataService.deleteAllUsersResponseFromCache();
-            dataService.deleteSummaryFromCache();
+            // cacheService.deleteAllUsersResponseFromCache();
+            // cacheService.deleteSummaryFromCache();
+
+            var httpCache = $cacheFactory.get('$http');
+            var dataCache = $cacheFactory.get('bookLoggerCache');
+
+            httpCache.remove(constants.APP_SERVER + '/api/users');
+            dataCache.remove('summary');
 
             return $http.post(constants.APP_SERVER + '/api/users/register', newUser)
                 .then(registerSuccess)
@@ -32981,7 +33041,7 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
     }
 
     angular.module('app')
-        .factory('authentication', ['$log', 'constants', 'dataService', '$q', '$http', '$localStorage', '$rootScope', authentication]);
+        .factory('authentication', ['constants', '$q', '$http', '$localStorage', '$rootScope', '$cacheFactory', authentication]);
 
 }());;(function() {
     'use strict';
@@ -33009,5 +33069,329 @@ this.activeTarget=b,this.clear();var c=this.selector+'[data-target="'+b+'"],'+th
 
     angular.module('app')
         .factory('$localStorage', ['$window', localStorage]);
+
+}());;(function() {
+    'use strict';
+
+    function bookDataService($q, $timeout, $http, constants, $cacheFactory, cacheService) {
+
+        function sendResponseData(response) {
+            return response.data;
+        }
+
+        function sendGetBooksError(response) {
+            return $q.reject('Error retrieving book(s). (HTTP status: ' + response.status + ')');
+        }
+
+        function getAllBooks() {
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/books',
+                    cache: true
+                })
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
+
+        function getBookByID(bookID) {
+            return $http.get(constants.APP_SERVER + '/api/books/' + bookID)
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
+
+        function updateBookSuccess(response) {
+            return 'Book updated: ' + response.config.data.title;
+        }
+
+        function updateBookError(response) {
+            return $q.reject('Error updating book. (HTTP status: ' + response.status + ')');
+        }
+
+        function updateBook(book) {
+
+            cacheService.deleteAllBooksResponseFromCache();
+            cacheService.deleteSummaryFromCache();
+
+            return $http({
+                    method: 'PUT',
+                    url: constants.APP_SERVER + '/api/books/' + book._id,
+                    data: book
+                })
+                .then(updateBookSuccess)
+                .catch(updateBookError);
+        }
+
+        function addBookSucces(response) {
+            return 'Book added: ' + response.config.data.title;
+        }
+
+        function addBookError(response) {
+            return $q.reject('Error adding book. (HTTP status: ' + response.status + ')');
+        }
+
+        function addBook(newBook) {
+
+            cacheService.deleteAllBooksResponseFromCache();
+            cacheService.deleteSummaryFromCache();
+
+            return $http.post(constants.APP_SERVER + '/api/books', newBook)
+                .then(addBookSucces)
+                .catch(addBookError);
+        }
+
+        function deleteBookSuccess(response) {
+            return 'Book deleted.';
+        }
+
+        function deleteBookError(response) {
+            return $q.reject('Error deleting book. (HTTP status: ' + response.status + ')');
+        }
+
+        function deleteBook(bookID) {
+
+            cacheService.deleteAllBooksResponseFromCache();
+            cacheService.deleteSummaryFromCache();
+
+            return $http({
+                    method: 'DELETE',
+                    url: constants.APP_SERVER + '/api/books/' + bookID
+                })
+                .then(deleteBookSuccess)
+                .catch(deleteBookError);
+        }
+
+        return {
+            getAllBooks: getAllBooks,
+            getBookByID: getBookByID,
+            updateBook: updateBook,
+            addBook: addBook,
+            deleteBook: deleteBook
+        };
+    }
+
+    angular.module('app')
+        .factory('bookDataService', ['$q', '$timeout', '$http', 'constants', '$cacheFactory', 'cacheService', bookDataService]);
+
+}());;(function() {
+    'use strict';
+
+    function userDataService($q, $timeout, $http, constants, $cacheFactory, cacheService) {
+
+        function sendResponseData(response) {
+            return response.data;
+        }
+
+        function sendGetBooksError(response) {
+            return $q.reject('Error retrieving book(s). (HTTP status: ' + response.status + ')');
+        }
+
+        function getReadBooks(userID) {
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users/' + userID + '/booksRead',
+                    cache: true
+                })
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
+
+        function addReadBookSucces(response) {
+            return 'Book added to read list.';
+        }
+
+        function addReadBookError(response) {
+            return $q.reject('Error adding book to favorite. (HTTP status: ' + response.status + ')');
+        }
+
+        function addReadBook(userID, book) {
+            cacheService.deleteReadBooksResponseFromCache();
+
+            return $http.post(constants.APP_SERVER + '/api/users/' + userID + '/booksRead', book)
+                .then(addReadBookSucces)
+                .catch(addReadBookError);
+        }
+
+        function getFavoriteBooks(userID) {
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users/' + userID + '/favoriteBooks',
+                    cache: true
+                })
+                .then(sendResponseData)
+                .catch(sendGetBooksError);
+        }
+
+        function addFavoriteBookSucces(response) {
+            return 'Book added to favorite.';
+        }
+
+        function addFavoriteBookError(response) {
+            return $q.reject('Error adding book to favorite. (HTTP status: ' + response.status + ')');
+        }
+
+        function addFavoriteBook(userID, book) {
+
+            cacheService.deleteFavoriteBooksResponseFromCache();
+
+            return $http.post(constants.APP_SERVER + '/api/users/' + userID + '/favoriteBooks', book)
+                .then(addFavoriteBookSucces)
+                .catch(addFavoriteBookError);
+        }
+
+        function getReadersSuccess(response) {
+            return response.data;
+        }
+
+        function getReadersError(response) {
+            return $q.reject('Error retrieving user(s). (HTTP status: ' + response.status + ')');
+        }
+
+        function getAllReaders() {
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users',
+                    cache: true
+                })
+                .then(getReadersSuccess)
+                .catch(getReadersError);
+        }
+
+        function sendGetUserError(response) {
+            return $q.reject('Error retrieving user(s). (HTTP status: ' + response.status + ')');
+        }
+
+        function getUserByID(userID) {
+            return $http({
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users/' + userID,
+                    cache: true
+                })
+                .then(sendResponseData)
+                .catch(sendGetUserError);
+        }
+
+        function updateUserSuccess(response) {
+            return 'User updated: ' + response.config.data.username;
+        }
+
+        function updateUserError(response) {
+            return $q.reject('Error updating user. (HTTP status: ' + response.status + ')');
+        }
+
+        function updateUser(user) {
+
+            cacheService.deleteCurrentUserResponseFromCache();
+
+            return $http({
+                    method: 'PUT',
+                    url: constants.APP_SERVER + '/api/users/' + user._id,
+                    data: user
+                })
+                .then(updateUserSuccess)
+                .catch(updateUserError);
+        }
+
+        return {
+            getAllUsers: getAllReaders,
+            getUserByID: getUserByID,
+            updateUser: updateUser,
+            getReadBooks: getReadBooks,
+            addReadBook: addReadBook,
+            getFavoriteBooks: getFavoriteBooks,
+            addFavoriteBook: addFavoriteBook
+        };
+    }
+
+    angular.module('app')
+        .factory('userDataService', ['$q', '$timeout', '$http', 'constants', '$cacheFactory', 'cacheService', userDataService]);
+
+}());;(function() {
+    'use strict';
+
+    function lazyLoad($timeout) {
+
+        var loading = {
+            busy: false,
+            cycle: 1,
+            complete: false
+        };
+
+        function getLoading() {
+            return loading;
+        }
+
+        function loadMoreData(allData) {
+            if (loading.cycle * 6 > allData.length) {
+                loading.complete = true;
+            }
+            loading.busy = true;
+
+            $timeout(function() {
+                loading.cycle++;
+                var loadedData = allData.slice(0, loading.cycle * 6);
+                loading.busy = false;
+
+                return loadedData;
+            }, 500);
+        };
+
+        return {
+            getLoading: getLoading,
+            loadMoreData: loadMoreData
+        };
+    }
+
+    angular.module('app')
+        .factory('lazyLoad', ['$timeout', lazyLoad]);
+
+}());;(function() {
+    'use strict';
+
+    function cacheService(constants, $cacheFactory, authentication) {
+
+        // cache functions & summary functions 
+
+        function deleteSummaryFromCache() {
+            var dataCache = $cacheFactory.get('bookLoggerCache');
+            dataCache.remove('summary');
+        }
+
+        function deleteAllBooksResponseFromCache() {
+            var httpCache = $cacheFactory.get('$http');
+            httpCache.remove(constants.APP_SERVER + '/api/books');
+        }
+
+        function deleteAllUsersResponseFromCache() {
+            var httpCache = $cacheFactory.get('$http');
+            httpCache.remove(constants.APP_SERVER + '/api/users');
+        }
+
+        function deleteReadBooksResponseFromCache() {
+            var httpCache = $cacheFactory.get('$http');
+            httpCache.remove(constants.APP_SERVER + '/api/users/' + authentication.getCurrentUser().id + '/booksRead');
+        }
+
+        function deleteFavoriteBooksResponseFromCache() {
+            var httpCache = $cacheFactory.get('$http');
+            httpCache.remove(constants.APP_SERVER + '/api/users/' + authentication.getCurrentUser().id + '/favoriteBooks');
+        }
+
+        function deleteCurrentUserResponseFromCache() {
+            var httpCache = $cacheFactory.get('$http');
+            httpCache.remove(constants.APP_SERVER + '/api/users/' + authentication.getCurrentUser().id);
+        }
+
+        return {
+            deleteSummaryFromCache: deleteSummaryFromCache,
+            deleteAllUsersResponseFromCache: deleteAllUsersResponseFromCache,
+            deleteAllBooksResponseFromCache: deleteAllBooksResponseFromCache,
+            deleteFavoriteBooksResponseFromCache: deleteFavoriteBooksResponseFromCache,
+            deleteCurrentUserResponseFromCache: deleteCurrentUserResponseFromCache,
+            deleteReadBooksResponseFromCache: deleteReadBooksResponseFromCache
+        };
+    }
+
+    angular.module('app')
+        .factory('cacheService', ['constants', '$cacheFactory', 'authentication', cacheService]);
 
 }());

@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function authentication($log, constants, dataService, $q, $http, $localStorage, $rootScope) {
+    function authentication(constants, $q, $http, $localStorage, $rootScope, $cacheFactory) {
 
         var TOKEN_KEY = 'Token';
         var loggedIn = false;
@@ -81,8 +81,14 @@
 
         function register(newUser) {
 
-            dataService.deleteAllUsersResponseFromCache();
-            dataService.deleteSummaryFromCache();
+            // cacheService.deleteAllUsersResponseFromCache();
+            // cacheService.deleteSummaryFromCache();
+
+            var httpCache = $cacheFactory.get('$http');
+            var dataCache = $cacheFactory.get('bookLoggerCache');
+
+            httpCache.remove(constants.APP_SERVER + '/api/users');
+            dataCache.remove('summary');
 
             return $http.post(constants.APP_SERVER + '/api/users/register', newUser)
                 .then(registerSuccess)
@@ -130,6 +136,6 @@
     }
 
     angular.module('app')
-        .factory('authentication', ['$log', 'constants', 'dataService', '$q', '$http', '$localStorage', '$rootScope', authentication]);
+        .factory('authentication', ['constants', '$q', '$http', '$localStorage', '$rootScope', '$cacheFactory', authentication]);
 
 }());

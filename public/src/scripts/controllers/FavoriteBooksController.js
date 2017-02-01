@@ -1,11 +1,11 @@
 (function() {
     'use strict';
 
-    function FavoriteBooksController(books, $window, dataService, $log, $timeout, authentication) {
+    function FavoriteBooksController($window, $log, $timeout, authentication, userDataService) {
 
         var vm = this;
 
-        vm.appName = books.appName;
+        vm.isAuthenticated = authentication.isAuthenticated();
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
         vm.loading = {
@@ -42,14 +42,12 @@
             $log.error('Error Message: ' + errorMsg);
         }
 
-        dataService.getFavoriteBooks(authentication.getCurrentUser().id)
+        userDataService.getFavoriteBooks(authentication.getCurrentUser().id)
             .then(getBooksSuccess)
             .catch(errorCallback);
-
-        vm.isAuthenticated = authentication.isAuthenticated();
     }
 
     angular.module('app')
-        .controller('FavoriteBooksController', ['books', '$window', 'dataService', '$log', '$timeout', 'authentication', FavoriteBooksController]);
+        .controller('FavoriteBooksController', ['$window', '$log', '$timeout', 'authentication', 'userDataService', FavoriteBooksController]);
 
 }());

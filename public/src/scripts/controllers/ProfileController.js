@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function ProfileController($log, $location, dataService, authentication) {
+    function ProfileController($log, userDataService, authentication) {
         var vm = this;
 
         function getUserSuccess(user) {
@@ -12,7 +12,7 @@
             $log.error(reason);
         }
 
-        dataService.getUserByID(authentication.getCurrentUser().id)
+        userDataService.getUserByID(authentication.getCurrentUser().id)
             .then(getUserSuccess)
             .catch(getUserError);
 
@@ -25,13 +25,13 @@
         }
 
         vm.updateUser = function() {
-            dataService.updateUser(vm.currentUser)
+            userDataService.updateUser(vm.currentUser)
                 .then(updateUserSuccess)
                 .catch(updateUserError);
         };
     }
 
     angular.module('app')
-        .controller('ProfileController', ['$log', '$location', 'dataService', 'authentication', ProfileController]);
+        .controller('ProfileController', ['$log', 'userDataService', 'authentication', ProfileController]);
 
 }());

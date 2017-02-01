@@ -1,11 +1,10 @@
 (function() {
     'use strict';
 
-    function BooksReadController(books, $window, dataService, $log, $timeout, authentication) {
+    function BooksReadController($window, $log, $timeout, authentication, userDataService) {
 
         var vm = this;
 
-        vm.appName = books.appName;
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
         vm.loading = {
@@ -24,7 +23,7 @@
                 vm.loading.cycle++;
                 vm.loadedBooks = vm.allBooks.slice(0, vm.loading.cycle * 6);
                 vm.loading.busy = false;
-            }, 2000);
+            }, 500);
         };
 
         angular.element($window).bind("scroll", function() {
@@ -42,7 +41,7 @@
             $log.error('Error Message: ' + errorMsg);
         }
 
-        dataService.getReadBooks(authentication.getCurrentUser().id)
+        userDataService.getReadBooks(authentication.getCurrentUser().id)
             .then(getBooksSuccess)
             .catch(errorCallback);
 
@@ -50,6 +49,6 @@
     }
 
     angular.module('app')
-        .controller('BooksReadController', ['books', '$window', 'dataService', '$log', '$timeout', 'authentication', BooksReadController]);
+        .controller('BooksReadController', ['$window', '$log', '$timeout', 'authentication', 'userDataService', BooksReadController]);
 
 }());
