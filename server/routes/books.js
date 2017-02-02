@@ -3,6 +3,7 @@ var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
 var Books = require('../models/books');
+var Verify = require('./verify');
 var booksRouter = express.Router();
 booksRouter.use(bodyParser.json());
 
@@ -16,7 +17,7 @@ booksRouter.route('/')
         });
     })
     // save a book
-    .post(function(req, res, next) {
+    .post(Verify.verifyOrdinaryUser, function(req, res, next) {
         Books.create(req.body, function(err, book) {
             if (err) next(err);
 
@@ -40,7 +41,7 @@ booksRouter.route('/:id')
         });
     })
     // update a book
-    .put(function(req, res, next) {
+    .put(Verify.verifyOrdinaryUser, Verify.verifyAdmin, function(req, res, next) {
         Books.findByIdAndUpdate(req.params.id, {
             $set: req.body
         }, {
@@ -50,7 +51,7 @@ booksRouter.route('/:id')
             res.json(book);
         });
     })
-    .delete(function(req, res, next) {
+    .delete(Verify.verifyOrdinaryUser, Verify.verifyAdmin, function(req, res, next) {
         Books.findById(req.params.id, function(err, book) {
             if (err) next(err);
 

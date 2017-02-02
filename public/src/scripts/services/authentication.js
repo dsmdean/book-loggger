@@ -119,6 +119,17 @@
             return currentUser;
         }
 
+        function updateCurrentUser(user) {
+            currentUser.firstname = user.firstname;
+            currentUser.lastname = user.lastname;
+            currentUser.username = user.username;
+
+            $localStorage.remove(TOKEN_KEY);
+            $localStorage.storeObject(TOKEN_KEY, currentUser);
+
+            return currentUser;
+        }
+
         function isAdmin() {
             return admin;
         }
@@ -131,6 +142,7 @@
             logout: logout,
             isAuthenticated: isAuthenticated,
             getCurrentUser: getCurrentUser,
+            updateCurrentUser: updateCurrentUser,
             isAdmin: isAdmin
         };
     }

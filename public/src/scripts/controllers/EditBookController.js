@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function EditBookController($stateParams, $cookies, $log, $location, currentUser, bookDataService) {
+    function EditBookController($stateParams, $cookies, $log, $location, currentUser, bookDataService, userDataService, authentication) {
         var vm = this;
 
         // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
@@ -39,12 +39,22 @@
             // $location.path('/');
         };
 
+        function addBookSuccess(message) {
+            $log.log(message);
+        }
+
+        function errorCallback(errorMsg) {
+            $log.error('Error Message: ' + errorMsg);
+        }
+
         vm.setAsFavorite = function() {
-            $cookies.favoriteBook = vm.currentBook.title;
+            userDataService.addFavoriteBook(authentication.getCurrentUser().id, { bookID: vm.currentBook._id })
+                .then(addBookSuccess)
+                .catch(errorCallback);
         };
     }
 
     angular.module('app')
-        .controller('EditBookController', ['$stateParams', '$cookies', '$log', '$location', 'currentUser', 'bookDataService', EditBookController]);
+        .controller('EditBookController', ['$stateParams', '$cookies', '$log', '$location', 'currentUser', 'bookDataService', 'userDataService', 'authentication', EditBookController]);
 
 }());

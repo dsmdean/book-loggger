@@ -1,14 +1,20 @@
 (function() {
     'use strict';
 
-    function AddBookController($log, $location, bookDataService) {
+    function AddBookController($log, $location, bookDataService, $state, $stateParams) {
         var vm = this;
 
         vm.newBook = {};
 
         function addBookSuccess(message) {
             $log.info(message);
-            $location.path('/');
+            // $location.path('/');
+
+            $state.transitionTo('app', $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
         }
 
         function addBookError(errorMessage) {
@@ -23,6 +29,6 @@
     }
 
     angular.module('app')
-        .controller('AddBookController', ['$log', '$location', 'bookDataService', AddBookController]);
+        .controller('AddBookController', ['$log', '$location', 'bookDataService', '$state', '$stateParams', AddBookController]);
 
 }());

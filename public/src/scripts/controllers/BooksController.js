@@ -9,6 +9,11 @@
         vm.isAdmin = authentication.isAdmin();
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
+        vm.bookRead = {
+            id: 0,
+            timeRead: 0,
+            title: ''
+        };
         vm.loading = {
             busy: false,
             cycle: 1,
@@ -78,8 +83,16 @@
                 .catch(deleteBookError);
         };
 
+        function updateMinutesSuccess(message) {
+            $log.log(message);
+        }
+
         function addBookSuccess(message) {
             $log.log(message);
+
+            userDataService.updateTotalMinutesUser({ id: authentication.getCurrentUser().id, minutes_read: vm.bookRead.timeRead })
+                .then(updateMinutesSuccess)
+                .catch(errorCallback);
         }
 
         vm.setAsRead = function(bookID) {
@@ -87,6 +100,11 @@
                 .then(addBookSuccess)
                 .catch(errorCallback);
         };
+
+        vm.setBookReadID = function(bookID, title) {
+            vm.bookRead.id = bookID;
+            vm.bookRead.title = title;
+        }
 
         // vm.lastEdited = $cookieStore.get('lastEdited');
         vm.currentUser = currentUser;

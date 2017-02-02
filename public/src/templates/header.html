@@ -24,6 +24,7 @@
                             <li><a ui-sref="app.profile">Profile</a></li>
                             <li><a ui-sref="app.readBooks">Books Read</a></li>
                             <li><a ui-sref="app.favoriteBooks">Favorite Books</a></li>
+                            <li ng-show="header.isAdmin"><a ui-sref="app.users">All Users</a></li>
                             <li><a href="#" ng-click="header.logOut()">Logout</a></li>
                         </ul>
                     </li>

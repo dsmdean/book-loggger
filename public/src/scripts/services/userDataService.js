@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function userDataService($q, $timeout, $http, constants, $cacheFactory, cacheService) {
+    function userDataService($q, $timeout, $http, constants, $cacheFactory, cacheService, authentication) {
 
         function sendResponseData(response) {
             return response.data;
@@ -88,12 +88,10 @@
 
         function getUserByID(userID) {
             return $http({
-                    method: 'GET',
-                    url: constants.APP_SERVER + '/api/users/' + userID,
-                    cache: true
-                })
-                .then(sendResponseData)
-                .catch(sendGetUserError);
+                method: 'GET',
+                url: constants.APP_SERVER + '/api/users/' + userID,
+                cache: true
+            });
         }
 
         function updateUserSuccess(response) {
@@ -107,10 +105,25 @@
         function updateUser(user) {
 
             cacheService.deleteCurrentUserResponseFromCache();
+            authentication.updateCurrentUser(user);
 
             return $http({
                     method: 'PUT',
                     url: constants.APP_SERVER + '/api/users/' + user._id,
+                    data: user
+                })
+                .then(updateUserSuccess)
+                .catch(updateUserError);
+        }
+
+        function updateTotalMinutesUser(user) {
+
+            cacheService.deleteCurrentUserResponseFromCache();
+            cacheService.deleteSummaryFromCache();
+
+            return $http({
+                    method: 'PUT',
+                    url: constants.APP_SERVER + '/api/users/' + user.id + '/totalMinutesRead',
                     data: user
                 })
                 .then(updateUserSuccess)
@@ -124,11 +137,12 @@
             getReadBooks: getReadBooks,
             addReadBook: addReadBook,
             getFavoriteBooks: getFavoriteBooks,
-            addFavoriteBook: addFavoriteBook
+            addFavoriteBook: addFavoriteBook,
+            updateTotalMinutesUser: updateTotalMinutesUser
         };
     }
 
     angular.module('app')
-        .factory('userDataService', ['$q', '$timeout', '$http', 'constants', '$cacheFactory', 'cacheService', userDataService]);
+        .factory('userDataService', ['$q', '$timeout', '$http', 'constants', '$cacheFactory', 'cacheService', 'authentication', userDataService]);
 
 }());

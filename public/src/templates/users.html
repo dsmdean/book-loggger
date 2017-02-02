@@ -1,0 +1,25 @@
+<div class="all_books">
+    <h3>
+        All Users&nbsp;
+        <div class="pull-right">
+            <!--<i class="fa fa-search" aria-hidden="true"></i>-->
+            <input type="text" class="form-control" name="search" placeholder="Search.." ng-model="users.search">
+        </div>
+    </h3>
+</div>
+<div class="row">
+    <div class="col-sm-3 col-md-2 book-listing boxInner" ng-repeat="user in users.loadedUsers | filter:users.search" style="min-height: 250px;">
+        <div class="book-container book-list">
+            <img ng-src="{{users.thumbnail}}" width="150px" title="{{user.firstname}} {{user.firstname}} Thumbnail" />
+        </div>
+
+        <h4 style="margin-top:19px;">{{user.firstname}} {{user.lastname}} <small class="">({{user.username}})</small></h4>
+
+        <a href="#">View user profile</a>
+    </div>
+</div>
+<center style="margin-top: 20px;">
+    <div ng-show='users.loading.busy && !users.loading.complete'><img width="20px" src="http://intuitglobal.intuit.com/delivery/cms/prod/sites/default/intuit.ca/images/quickbooks-sui-images/loader.gif" /> Loading data...<br/><br/></div>
+    <div ng-show='users.loading.busy && users.loading.complete'><img width="20px" src="http://intuitglobal.intuit.com/delivery/cms/prod/sites/default/intuit.ca/images/quickbooks-sui-images/loader.gif" /> No more data...<br/><br/></div>
+    <div><button class="btn btn-default" ng-click="users.loadMoreData()">Load more...</button></div>
+</center>

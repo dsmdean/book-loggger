@@ -6,6 +6,7 @@
 
         // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
         // $log.log(vm.currentBook);
+        vm.isAuthenticated = authentication.isAuthenticated();
 
         function getBookSuccess(book) {
             vm.currentBook = book;

@@ -1,6 +1,6 @@
-<div class="summary pull-right">
+<!--<div class="summary pull-right">
     {{books.summaryData.bookCount}} Books - {{books.summaryData.readerCount}} Readers - {{books.summaryData.grandTotalMinutes}} Total Minutes Read
-</div>
+</div>-->
 
 <div class="all_books">
     <h3>
@@ -22,14 +22,14 @@
 
         <h4 style="margin-top:19px;">{{book.title}} - <small class="">{{book.author}}</small></h4>
 
-        <div ng-show="books.isAuthenticated">
+        <div>
             <div ng-show="books.isAdmin">
                 <a ui-sref="app.editBook({bookID: book._id})">Edit</a> |
-                <a ng-click="books.deleteBook(book._id)">Delete</a>
+                <a href="#" ng-click="books.deleteBook(book._id)">Delete</a>
             </div>
             <div ng-hide="books.isAdmin">
-                <a ui-sref="app.viewBook({bookID: book._id})">View</a> |
-                <a href="#" ng-click="books.setAsRead(book._id)">Read Book</a>
+                <a ui-sref="app.viewBook({bookID: book._id})">View</a>
+                <a ng-show="books.isAuthenticated" href="#" data-toggle="modal" data-target="#bookReadModal" ng-click="books.setBookReadID(book._id, book.title)"> | Read Book</a>
             </div>
         </div>
     </div>
@@ -39,3 +39,43 @@
     <div ng-show='books.loading.busy && books.loading.complete'><img width="20px" src="http://intuitglobal.intuit.com/delivery/cms/prod/sites/default/intuit.ca/images/quickbooks-sui-images/loader.gif" /> No more data...<br/><br/></div>
     <div><button class="btn btn-default" ng-click="books.loadMoreData()">Load more...</button></div>
 </center>
+
+<!-- Book Read Modal -->
+<div class="modal fade" id="bookReadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">How much time did it take to read the book? <small>({{books.bookRead.title}})</small></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="time" class="col-md-3 col-md-offset-1 control-label">Time in minutes</label>
+                        <div class="col-md-5">
+                            <input type="number" ng-model="books.bookRead.timeRead" class="form-control" id="time" placeholder="Time in minutes">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" ng-click="books.setAsRead(books.bookRead.id)" data-dismiss="modal" data-toggle="modal" data-target="#bookReadSuccessModal">Save</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Book Read Success Modal -->
+<div class="modal fade" id="bookReadSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title">Book with title "{{books.bookRead.title}}" was added to Read Books.</h5><br/>
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" ui-sref="app.readBooks">Go to Read Books</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ui-sref="app">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

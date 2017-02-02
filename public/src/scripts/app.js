@@ -84,6 +84,11 @@
                         controller: 'HeaderController',
                         controllerAs: 'header'
                     },
+                    'summary': {
+                        templateUrl: 'templates/summary.html',
+                        controller: 'BooksController',
+                        controllerAs: 'books'
+                    },
                     'content': {
                         templateUrl: 'templates/books.html',
                         controller: 'BooksController',
@@ -151,6 +156,16 @@
                         templateUrl: 'templates/favoriteBooks.html',
                         controller: 'FavoriteBooksController',
                         controllerAs: 'books'
+                    }
+                }
+            })
+            .state('app.users', {
+                url: 'users',
+                views: {
+                    'content@': {
+                        templateUrl: 'templates/users.html',
+                        controller: 'UsersController',
+                        controllerAs: 'users'
                     }
                 }
             })
