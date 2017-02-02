@@ -88,10 +88,12 @@
 
         function getUserByID(userID) {
             return $http({
-                method: 'GET',
-                url: constants.APP_SERVER + '/api/users/' + userID,
-                cache: true
-            });
+                    method: 'GET',
+                    url: constants.APP_SERVER + '/api/users/' + userID,
+                    cache: true
+                })
+                .then(sendResponseData)
+                .catch(sendGetUserError);
         }
 
         function updateUserSuccess(response) {
@@ -120,6 +122,9 @@
 
             cacheService.deleteCurrentUserResponseFromCache();
             cacheService.deleteSummaryFromCache();
+
+            // var dataCache = $cacheFactory.get('bookLoggerCache');
+            // dataCache.remove('summary');
 
             return $http({
                     method: 'PUT',

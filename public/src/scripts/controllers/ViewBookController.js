@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function ViewBookController($stateParams, $cookieStore, userDataService, bookDataService, $log, currentUser, authentication) {
+    function ViewBookController($stateParams, $cookieStore, userDataService, bookDataService, $log, currentUser, authentication, $state) {
         var vm = this;
 
         // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
@@ -35,9 +35,13 @@
                 .then(addBookSuccess)
                 .catch(errorCallback);
         };
+
+        vm.goToFavorites = function() {
+            $state.transitionTo('app.favoriteBooks');
+        }
     }
 
     angular.module('app')
-        .controller('ViewBookController', ['$stateParams', '$cookieStore', 'userDataService', 'bookDataService', '$log', 'currentUser', 'authentication', ViewBookController]);
+        .controller('ViewBookController', ['$stateParams', '$cookieStore', 'userDataService', 'bookDataService', '$log', 'currentUser', 'authentication', '$state', ViewBookController]);
 
 }());

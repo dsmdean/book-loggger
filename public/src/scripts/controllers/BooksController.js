@@ -14,6 +14,10 @@
             timeRead: 0,
             title: ''
         };
+        vm.bookDelete = {
+            id: 0,
+            title: ''
+        };
         vm.loading = {
             busy: false,
             cycle: 1,
@@ -85,6 +89,8 @@
 
         function updateMinutesSuccess(message) {
             $log.log(message);
+
+            vm.summaryData.grandTotalMinutes += vm.bookRead.timeRead;
         }
 
         function addBookSuccess(message) {
@@ -101,13 +107,28 @@
                 .catch(errorCallback);
         };
 
-        vm.setBookReadID = function(bookID, title) {
+        vm.setBookRead = function(bookID, title) {
             vm.bookRead.id = bookID;
             vm.bookRead.title = title;
         }
 
+        vm.setBookDelete = function(bookID, title) {
+            vm.bookDelete.id = bookID;
+            vm.bookDelete.title = title;
+        }
+
+        vm.reloadState = function(state) {
+            $state.transitionTo(state, $stateParams, {
+                reload: true,
+                inherit: false,
+                notify: true
+            });
+        };
+
         // vm.lastEdited = $cookieStore.get('lastEdited');
         vm.currentUser = currentUser;
+
+
     }
 
     angular.module('app')
