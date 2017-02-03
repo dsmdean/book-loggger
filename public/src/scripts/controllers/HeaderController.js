@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function HeaderController($log, authentication, $location, $rootScope, $state, $stateParams) {
+    function HeaderController($log, authentication, $location, $rootScope, $state, $stateParams, $interval) {
 
         var vm = this;
 
@@ -16,6 +16,31 @@
             if (authentication.isAdmin()) {
                 vm.isAdmin = true;
             }
+
+            Date.prototype.addHours = function(h) {
+                this.setTime(this.getTime() + (h * 60 * 60 * 1000));
+                return this;
+            };
+
+            var tokenExpiration = new Date().addHours(0.05);
+
+            $log.debug('Token expiration: ' + tokenExpiration);
+
+            function stopInterval() {
+                $interval.cancel(interval);
+            }
+
+            var interval = $interval(function() {
+                if (new Date() >= tokenExpiration) {
+                    // $log.debug('Time is up!');
+
+                    // TODO: open alert so user knows they're being logged out
+                    vm.logOut();
+                    stopInterval();
+                } else {
+                    // $log.debug('Still some time left');
+                }
+            }, 60000);
 
             $location.path("/");
 
@@ -51,6 +76,6 @@
     }
 
     angular.module('app')
-        .controller('HeaderController', ['$log', 'authentication', '$location', '$rootScope', '$state', HeaderController]);
+        .controller('HeaderController', ['$log', 'authentication', '$location', '$rootScope', '$state', '$stateParams', '$interval', HeaderController]);
 
 }());
