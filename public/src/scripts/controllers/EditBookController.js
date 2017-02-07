@@ -1,16 +1,12 @@
 (function() {
     'use strict';
 
-    function EditBookController($stateParams, $cookies, $log, $location, currentUser, bookDataService, userDataService, authentication) {
+    function EditBookController($state, $stateParams, $log, bookDataService, userDataService, authentication) {
         var vm = this;
-
-        // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
-        // $log.log(vm.currentBook);
+        vm.message;
 
         function getBookSuccess(book) {
             vm.currentBook = book;
-            // $cookieStore.put('lastEdited', vm.currentBook);
-            currentUser.lastBookEdited = vm.currentBook;
         }
 
         function getBookError(reason) {
@@ -23,28 +19,28 @@
 
         function updateBookSuccess(message) {
             $log.info(message);
-            $location.path('/');
+            vm.message = "Book with title '" + vm.currentBook.title + "' was edited.";
         }
 
         function updateBookError(errorMessage) {
             $log.error(errorMessage);
+            vm.message = "Something went wrong! Book with title '" + vm.currentBook.title + "' was not edited.";
         }
 
         vm.saveBook = function() {
             bookDataService.updateBook(vm.currentBook)
                 .then(updateBookSuccess)
                 .catch(updateBookError);
-
-            // vm.currentBook.$update();
-            // $location.path('/');
         };
 
         function addBookSuccess(message) {
             $log.log(message);
+            vm.message = "Book with title '" + vm.currentBook.title + "' was added to favorites.";
         }
 
         function errorCallback(errorMsg) {
             $log.error('Error Message: ' + errorMsg);
+            vm.message = "Something went wrong! Book with title '" + vm.currentBook.title + "' was not added to favorites.";
         }
 
         vm.setAsFavorite = function() {
@@ -52,9 +48,13 @@
                 .then(addBookSuccess)
                 .catch(errorCallback);
         };
+
+        vm.loadState = function(state) {
+            $state.transitionTo(state);
+        }
     }
 
     angular.module('app')
-        .controller('EditBookController', ['$stateParams', '$cookies', '$log', '$location', 'currentUser', 'bookDataService', 'userDataService', 'authentication', EditBookController]);
+        .controller('EditBookController', ['$state', '$stateParams', '$log', 'bookDataService', 'userDataService', 'authentication', EditBookController]);
 
 }());

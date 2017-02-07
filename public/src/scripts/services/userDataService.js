@@ -135,6 +135,46 @@
                 .catch(updateUserError);
         }
 
+        function deleteFavoriteSuccess(response) {
+            return 'Favorite book deleted';
+        }
+
+        function deleteFavoriteError(response) {
+            return $q.reject('Error deleting favorite book. (HTTP status: ' + response.status + ')');
+        }
+
+        function deleteBookFromFavorites(userID, bookID) {
+
+            cacheService.deleteFavoriteBooksResponseFromCache();
+
+            return $http({
+                    method: 'DELETE',
+                    url: constants.APP_SERVER + '/api/users/' + userID + '/favoriteBooks/' + bookID
+                })
+                .then(deleteFavoriteSuccess)
+                .catch(deleteFavoriteError);
+        }
+
+        function deleteReadBooksSuccess(response) {
+            return 'Read book deleted';
+        }
+
+        function deleteReadBooksError(response) {
+            return $q.reject('Error deleting read book. (HTTP status: ' + response.status + ')');
+        }
+
+        function deleteReadBooks(userID, bookID) {
+
+            cacheService.deleteReadBooksResponseFromCache();
+
+            return $http({
+                    method: 'DELETE',
+                    url: constants.APP_SERVER + '/api/users/' + userID + '/booksRead/' + bookID
+                })
+                .then(deleteReadBooksSuccess)
+                .catch(deleteReadBooksError);
+        }
+
         return {
             getAllUsers: getAllReaders,
             getUserByID: getUserByID,
@@ -143,7 +183,9 @@
             addReadBook: addReadBook,
             getFavoriteBooks: getFavoriteBooks,
             addFavoriteBook: addFavoriteBook,
-            updateTotalMinutesUser: updateTotalMinutesUser
+            updateTotalMinutesUser: updateTotalMinutesUser,
+            deleteBookFromFavorites: deleteBookFromFavorites,
+            deleteReadBooks: deleteReadBooks
         };
     }
 

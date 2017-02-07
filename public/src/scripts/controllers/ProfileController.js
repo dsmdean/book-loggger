@@ -1,8 +1,10 @@
 (function() {
     'use strict';
 
-    function ProfileController($log, userDataService, authentication) {
+    function ProfileController($log, userDataService, authentication, badgeService) {
         var vm = this;
+        vm.message;
+        vm.getBadge = badgeService.retrieveBadge;
 
         function getUserSuccess(user) {
             vm.currentUser = user;
@@ -18,10 +20,12 @@
 
         function updateUserSuccess(message) {
             $log.log(message);
+            vm.message = "You successfully updated your profile!";
         }
 
         function updateUserError(errorMessage) {
             $log.log(errorMessage);
+            vm.message = "Something went wrong! Your profile was not updated!";
         }
 
         vm.updateUser = function() {
@@ -32,6 +36,6 @@
     }
 
     angular.module('app')
-        .controller('ProfileController', ['$log', 'userDataService', 'authentication', ProfileController]);
+        .controller('ProfileController', ['$log', 'userDataService', 'authentication', 'badgeService', ProfileController]);
 
 }());

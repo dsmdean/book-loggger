@@ -191,24 +191,6 @@
             });
 
         $urlRouterProvider.otherwise('/');
-
-        // $routeProvider
-        //     .when('/', {
-        //         templateUrl: 'app/templates/books.html',
-        //         controller: 'BooksController',
-        //         controllerAs: 'books'
-        //     })
-        //     .when('/AddBook', {
-        //         templateUrl: 'app/templates/addBook.html',
-        //         controller: 'AddBookController',
-        //         controllerAs: 'bookAdder'
-        //     })
-        //     .when('/EditBook/:bookID', {
-        //         templateUrl: 'app/templates/editBook.html',
-        //         controller: 'EditBookController',
-        //         controllerAs: 'bookEditor'
-        //     })
-        //     .otherwise('/');
     }]);
 
     app.run(['$rootScope', function($rootScope) {

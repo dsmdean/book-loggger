@@ -37,13 +37,14 @@
 </div>
 
 <!-- Add Book Success Modal -->
-<div class="modal fade" id="AddBookSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div ng-show="bookAdder.message" class="modal fade" id="AddBookSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header" style="padding: 30px;">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h5 class="modal-title">Book with title "{{bookAdder.newBook.title}}" was added.</h5><br/>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="bookAdder.goToBooks()" ">Close</button>
+                <br/>
+                <h5 class="modal-title">{{bookAdder.message}}</h5><br/>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="bookAdder.goToBooks()">Close</button>
             </div>
         </div>
     </div>

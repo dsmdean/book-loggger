@@ -1,13 +1,19 @@
 (function() {
     'use strict';
 
-    function HeaderController($log, authentication, $location, $rootScope, $state, $stateParams, $interval) {
+    function HeaderController($log, authentication, $location, $rootScope, $state, $stateParams, $interval, $localStorage, $window) {
 
         var vm = this;
 
         vm.loggedIn = false;
         vm.isAdmin = false;
         vm.currentUser = {};
+        var tokenExpiration;
+        var interval;
+
+        function stopInterval() {
+            $interval.cancel(interval);
+        }
 
         function loginSuccess() {
             vm.loggedIn = true;
@@ -22,23 +28,22 @@
                 return this;
             };
 
-            var tokenExpiration = new Date().addHours(0.05);
-
-            $log.debug('Token expiration: ' + tokenExpiration);
-
-            function stopInterval() {
-                $interval.cancel(interval);
+            tokenExpiration = $localStorage.getObject('tokenExpiration', '{}');
+            if (tokenExpiration.date === undefined) {
+                tokenExpiration = { date: new Date().addHours(23.75) };
+                $localStorage.storeObject('tokenExpiration', tokenExpiration);
             }
 
-            var interval = $interval(function() {
-                if (new Date() >= tokenExpiration) {
-                    // $log.debug('Time is up!');
+            $log.debug('Token expiration: ' + Date.parse(tokenExpiration.date));
 
-                    // TODO: open alert so user knows they're being logged out
+            interval = $interval(function() {
+                if (new Date() >= Date.parse(tokenExpiration.date)) {
+                    $log.debug('Time is up!');
                     vm.logOut();
-                    stopInterval();
+
+                    $window.alert("Your token has ended. You have been logged out!");
                 } else {
-                    // $log.debug('Still some time left');
+                    $log.debug('Still some time left');
                 }
             }, 60000);
 
@@ -56,6 +61,8 @@
 
         function doLogoutSuccess(message) {
             $log.log(message);
+            stopInterval();
+            $localStorage.remove('tokenExpiration');
 
             $state.transitionTo('app', $stateParams, {
                 reload: true,
@@ -76,6 +83,6 @@
     }
 
     angular.module('app')
-        .controller('HeaderController', ['$log', 'authentication', '$location', '$rootScope', '$state', '$stateParams', '$interval', HeaderController]);
+        .controller('HeaderController', ['$log', 'authentication', '$location', '$rootScope', '$state', '$stateParams', '$interval', '$localStorage', '$window', HeaderController]);
 
 }());

@@ -9,7 +9,7 @@
 
         function doLoginSuccess(message) {
             $log.log(message);
-            $location.path('/');
+            $location.path('/profile');
         }
 
         function doLoginError(errorMessage) {

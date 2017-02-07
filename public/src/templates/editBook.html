@@ -27,11 +27,39 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-4">
-                            <button class="btn btn-default" ng-click="bookEditor.saveBook()">Save</button>
-                            <button class="btn btn-default" ng-click="bookEditor.setAsFavorite()">Set as Favorite</button>
+                            <button class="btn btn-default" data-toggle="modal" data-target="#SaveBookSuccessModal" ng-click="bookEditor.saveBook()">Save</button>
+                            <button class="btn btn-default" data-toggle="modal" data-target="#FavoriteBookSuccessModal" ng-click="bookEditor.setAsFavorite()">Set as Favorite</button>
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Book Success Modal -->
+<div ng-show="bookEditor.message" class="modal fade" id="SaveBookSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br/>
+                <h5 class="modal-title">{{bookEditor.message}}</h5><br/>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="bookEditor.loadState('app')">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Favorite Book Success Modal -->
+<div ng-show="bookEditor.message" class="modal fade" id="FavoriteBookSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br/>
+                <h5 class="modal-title">{{bookEditor.message}}</h5><br/>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="bookEditor.loadState('app.favoriteBooks')">Close</button>
             </div>
         </div>
     </div>

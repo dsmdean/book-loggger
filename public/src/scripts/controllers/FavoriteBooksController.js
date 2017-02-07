@@ -8,6 +8,8 @@
         vm.isAuthenticated = authentication.isAuthenticated();
         vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
         vm.search = "";
+        vm.message;
+        vm.book;
         vm.loading = {
             busy: false,
             cycle: 1,
@@ -42,9 +44,36 @@
             $log.error('Error Message: ' + errorMsg);
         }
 
-        userDataService.getFavoriteBooks(authentication.getCurrentUser().id)
-            .then(getBooksSuccess)
-            .catch(errorCallback);
+        function getFavoriteBooks() {
+            userDataService.getFavoriteBooks(authentication.getCurrentUser().id)
+                .then(getBooksSuccess)
+                .catch(errorCallback)
+        };
+
+        vm.deleteFromList = function(bookID, title) {
+            vm.book = { id: bookID, title: title };
+            $log.log(vm.book.title);
+        }
+
+        function deleteBookSuccess(message) {
+            $log.info(message);
+
+            vm.message = "Book with title '" + vm.book.title + "' was deleted from list.";
+            getFavoriteBooks();
+        }
+
+        function deleteBookError(errorMessage) {
+            $log.error(errorMessage);
+            vm.message = "Something went wrong! The book was not deleted from list.";
+        }
+
+        vm.deleteBook = function() {
+            userDataService.deleteBookFromFavorites(authentication.getCurrentUser().id, vm.book.id)
+                .then(deleteBookSuccess)
+                .catch(deleteBookError);
+        };
+
+        getFavoriteBooks();
     }
 
     angular.module('app')

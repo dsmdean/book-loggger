@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function authentication(constants, $q, $http, $localStorage, $rootScope, $cacheFactory) {
+    function authentication(constants, $q, $http, $localStorage, $rootScope, $cacheFactory, $interval, $log) {
 
         var TOKEN_KEY = 'Token';
         var loggedIn = false;
@@ -134,6 +134,14 @@
             return admin;
         }
 
+        function getDate() {
+            if (tokenExpiration.date !== undefined) {
+                return tokenExpiration.date;
+            } else {
+                return null;
+            }
+        }
+
         loadUserCredentials();
 
         return {
@@ -143,11 +151,12 @@
             isAuthenticated: isAuthenticated,
             getCurrentUser: getCurrentUser,
             updateCurrentUser: updateCurrentUser,
-            isAdmin: isAdmin
+            isAdmin: isAdmin,
+            getDate: getDate
         };
     }
 
     angular.module('app')
-        .factory('authentication', ['constants', '$q', '$http', '$localStorage', '$rootScope', '$cacheFactory', authentication]);
+        .factory('authentication', ['constants', '$q', '$http', '$localStorage', '$rootScope', '$cacheFactory', '$interval', '$log', authentication]);
 
 }());

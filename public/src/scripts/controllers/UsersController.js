@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function UsersController($window, $log, $timeout, authentication, userDataService) {
+    function UsersController($window, $log, $timeout, authentication, userDataService, badgeService) {
 
         var vm = this;
 
@@ -9,6 +9,7 @@
         vm.isAdmin = authentication.isAdmin();
         vm.thumbnail = "http://images.iimg.in/c/569f4771c45d324bda8b4660-4-501-0-1453279096/google/user-icon-png-pnglogocom.img?crop=1";
         vm.search = "";
+        vm.getBadge = badgeService.retrieveBadge;
         vm.loading = {
             busy: false,
             cycle: 1,
@@ -49,6 +50,6 @@
     }
 
     angular.module('app')
-        .controller('UsersController', ['$window', '$log', '$timeout', 'authentication', 'userDataService', UsersController]);
+        .controller('UsersController', ['$window', '$log', '$timeout', 'authentication', 'userDataService', 'badgeService', UsersController]);
 
 }());

@@ -1,17 +1,20 @@
 (function() {
     'use strict';
 
-    function AddBookController($log, $location, bookDataService, $state) {
+    function AddBookController($log, bookDataService, $state) {
         var vm = this;
 
         vm.newBook = {};
+        vm.message;
 
         function addBookSuccess(message) {
             $log.info(message);
+            vm.message = "Book with title '" + vm.newBook.title + "' was added.";
         }
 
         function addBookError(errorMessage) {
             $log.error(errorMessage);
+            vm.message = "Something went wrong! Book with title '" + vm.newBook.title + "' was not added.";
         }
 
         vm.addBook = function() {
@@ -26,6 +29,6 @@
     }
 
     angular.module('app')
-        .controller('AddBookController', ['$log', '$location', 'bookDataService', '$state', '$stateParams', AddBookController]);
+        .controller('AddBookController', ['$log', 'bookDataService', '$state', '$stateParams', AddBookController]);
 
 }());

@@ -142,12 +142,36 @@ userRouter.route('/:userId/booksRead')
         User.findById(req.params.userId, function(err, user) {
             if (err) next(err);
 
-            user.booksRead.push(req.body.bookID);
-            user.save(function(err, user) {
-                if (err) next(err);
+            if (user.booksRead.indexOf(req.body.bookID) === -1) {
+                user.booksRead.push(req.body.bookID);
+                user.save(function(err, user) {
+                    if (err) next(err);
 
-                res.json('Added the book to books read. ID: ' + req.body.bookID);
-            });
+                    res.json('Added the book to books read. ID: ' + req.body.bookID);
+                });
+            } else {
+                res.json('The book is already in the Read Books list. ID: ' + req.body.bookID);
+            }
+        });
+    });
+
+userRouter.route('/:userId/booksRead/:bookId')
+    // delete a specific book in book read list from a specific user
+    .delete(function(req, res, next) {
+        User.findById(req.params.userId, function(err, user) {
+            if (err) next(err);
+
+            if (user.booksRead.indexOf(req.params.bookId) !== -1) {
+                user.booksRead.splice(user.booksRead.indexOf(req.params.bookId), 1);
+
+                user.save(function(err, user) {
+                    if (err) next(err);
+
+                    res.json('Deleted the book from books read. ID: ' + req.params.bookId);
+                });
+            } else {
+                res.json('Book not deleted from books read (book not in books read list). ID: ' + req.params.bookId);
+            }
         });
     });
 
@@ -167,12 +191,36 @@ userRouter.route('/:userId/favoriteBooks')
         User.findById(req.params.userId, function(err, user) {
             if (err) next(err);
 
-            user.favoriteBooks.push(req.body.bookID);
-            user.save(function(err, user) {
-                if (err) next(err);
+            if (user.favoriteBooks.indexOf(req.body.bookID) === -1) {
+                user.favoriteBooks.push(req.body.bookID);
+                user.save(function(err, user) {
+                    if (err) next(err);
 
-                res.json('Added the book to books read. ID: ' + req.body.bookID);
-            });
+                    res.json('Added the book to favorites. ID: ' + req.body.bookID);
+                });
+            } else {
+                res.json('The book is already in the favorites list. ID: ' + req.body.bookID);
+            }
+        });
+    });
+
+userRouter.route('/:userId/favoriteBooks/:bookId')
+    // delete a specific book in favorties book from a specific user
+    .delete(function(req, res, next) {
+        User.findById(req.params.userId, function(err, user) {
+            if (err) next(err);
+
+            if (user.favoriteBooks.indexOf(req.params.bookId) !== -1) {
+                user.favoriteBooks.splice(user.favoriteBooks.indexOf(req.params.bookId), 1);
+
+                user.save(function(err, user) {
+                    if (err) next(err);
+
+                    res.json('Deleted the book from favorites. ID: ' + req.params.bookId);
+                });
+            } else {
+                res.json('Book not deleted from favorites (book not in favorites list). ID: ' + req.params.bookId);
+            }
         });
     });
 

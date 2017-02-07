@@ -6,14 +6,16 @@
         var vm = this;
 
         vm.registerData = {};
+        vm.message;
 
         function registerSuccess(message) {
             $log.log(message);
-            $location.path('/');
+            vm.message = "You are successfully registered. Want to login?";
         }
 
         function registerError(errorMessage) {
             $log.log(errorMessage);
+            vm.message = "Something went wrong! We could not register you.";
         }
 
         vm.register = function() {
@@ -21,6 +23,10 @@
                 .then(registerSuccess)
                 .catch(registerError);
         };
+
+        vm.goToPage = function(page) {
+            $location.path(page);
+        }
     }
 
     angular.module('app')

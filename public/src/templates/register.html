@@ -33,10 +33,25 @@
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-md-1">
-                            <button class="btn btn-default" type="submit">Register</button>
+                            <button class="btn btn-default" type="submit" data-toggle="modal" data-target="#RegisterUserSuccessModal">Register</button>
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Register User Success Modal -->
+<div ng-show="register.message" class="modal fade" id="RegisterUserSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br/>
+                <h5 class="modal-title">{{register.message}}</h5><br/>
+                <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" ng-click="register.goToPage('/login')">Login</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="register.goToPage('/')">Close</button>
             </div>
         </div>
     </div>

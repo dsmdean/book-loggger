@@ -1,17 +1,14 @@
 (function() {
     'use strict';
 
-    function ViewBookController($stateParams, $cookieStore, userDataService, bookDataService, $log, currentUser, authentication, $state) {
+    function ViewBookController($stateParams, userDataService, bookDataService, $log, authentication, $state) {
         var vm = this;
 
-        // vm.currentBook = BooksResource.get({ bookID: $routeParams.bookID });
-        // $log.log(vm.currentBook);
         vm.isAuthenticated = authentication.isAuthenticated();
+        vm.message;
 
         function getBookSuccess(book) {
             vm.currentBook = book;
-            // $cookieStore.put('lastEdited', vm.currentBook);
-            currentUser.lastBookEdited = vm.currentBook;
         }
 
         function getBookError(reason) {
@@ -24,10 +21,12 @@
 
         function addBookSuccess(message) {
             $log.log(message);
+            vm.message = "Book with title '" + vm.currentBook.title + "' was added to Favorites.";
         }
 
         function errorCallback(errorMsg) {
             $log.error('Error Message: ' + errorMsg);
+            vm.message = "Something went wrong! Book with title '" + vm.currentBook.title + "' was not added to Favorites.";
         }
 
         vm.setAsFavorite = function() {
@@ -42,6 +41,6 @@
     }
 
     angular.module('app')
-        .controller('ViewBookController', ['$stateParams', '$cookieStore', 'userDataService', 'bookDataService', '$log', 'currentUser', 'authentication', '$state', ViewBookController]);
+        .controller('ViewBookController', ['$stateParams', 'userDataService', 'bookDataService', '$log', 'authentication', '$state', ViewBookController]);
 
 }());

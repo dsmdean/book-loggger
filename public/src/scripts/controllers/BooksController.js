@@ -1,7 +1,7 @@
 (function() {
     'use strict';
 
-    function BooksController($window, dataService, $cookieStore, $log, $state, $stateParams, currentUser, $timeout, authentication, bookDataService, userDataService) {
+    function BooksController($window, dataService, $log, $state, $stateParams, $timeout, authentication, bookDataService, userDataService) {
 
         var vm = this;
 
@@ -12,11 +12,13 @@
         vm.bookRead = {
             id: 0,
             timeRead: 0,
-            title: ''
+            title: '',
+            message: undefined
         };
         vm.bookDelete = {
             id: 0,
-            title: ''
+            title: '',
+            message: undefined
         };
         vm.loading = {
             busy: false,
@@ -60,25 +62,25 @@
 
         function errorCallback(errorMsg) {
             $log.error('Error Message: ' + errorMsg);
+            vm.bookRead.message = "Something went wrong! The book was not added to Read Books.";
         }
 
-        bookDataService.getAllBooks()
-            .then(getBooksSuccess)
-            .catch(errorCallback);
+        function getBooks() {
+            bookDataService.getAllBooks()
+                .then(getBooksSuccess)
+                .catch(errorCallback);
+        }
 
         function deleteBookSuccess(message) {
             $log.info(message);
             // $route.reload();
-
-            $state.transitionTo($state.current, $stateParams, {
-                reload: true,
-                inherit: false,
-                notify: true
-            });
+            vm.bookDelete.message = "Book with title '" + vm.bookDelete.title + "' was deleted.";
+            getBooks();
         }
 
         function deleteBookError(errorMessage) {
             $log.error(errorMessage);
+            vm.bookDelete.message = "Something went wrong! The book was not deleted.";
         }
 
         vm.deleteBook = function(bookID) {
@@ -91,6 +93,7 @@
             $log.log(message);
 
             vm.summaryData.grandTotalMinutes += vm.bookRead.timeRead;
+            vm.bookRead.message = "Book with title '" + vm.bookRead.title + "' was added to Read Books.";
         }
 
         function addBookSuccess(message) {
@@ -125,13 +128,10 @@
             });
         };
 
-        // vm.lastEdited = $cookieStore.get('lastEdited');
-        vm.currentUser = currentUser;
-
-
+        getBooks();
     }
 
     angular.module('app')
-        .controller('BooksController', ['$window', 'dataService', '$cookieStore', '$log', '$state', '$stateParams', 'currentUser', '$timeout', 'authentication', 'bookDataService', 'userDataService', BooksController]);
+        .controller('BooksController', ['$window', 'dataService', '$log', '$state', '$stateParams', '$timeout', 'authentication', 'bookDataService', 'userDataService', BooksController]);
 
 }());

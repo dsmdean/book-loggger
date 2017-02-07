@@ -6,7 +6,6 @@
     <h3>
         All Books&nbsp;
         <a ng-show="books.isAuthenticated" ui-sref="app.addBook" title="Add New Book"><span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span></a>
-        <a ng-show="books.isAuthenticated" ui-sref="app.editBook({bookID: books.currentUser.lastBookEdited._id})" title="Open Last Edited"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span></a>
 
         <div class="pull-right">
             <!--<i class="fa fa-search" aria-hidden="true"></i>-->
@@ -68,13 +67,13 @@
 </div>
 
 <!-- Book Read Success Modal -->
-<div class="modal fade" id="bookReadSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div ng-show="books.bookRead.message" class="modal fade" id="bookReadSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header" style="padding: 30px;">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <br/>
-                <h5 class="modal-title">Book with title "{{books.bookRead.title}}" was added to Read Books.</h5><br/>
+                <h5 class="modal-title">{{books.bookRead.message}}"</h5><br/>
                 <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal" ng-click="books.reloadState('app.readBooks')">Go to Read Books</button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ui-sref="app">Close</button>
             </div>
@@ -91,7 +90,7 @@
                 <br/>
                 <h4 class="modal-title">Do you want to delete the book named "{{books.bookDelete.title}}"?</h4>
                 <br/>
-                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" ng-click="books.deleteBook(books.bookDelete.id)">Yes, Delete Book</button>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" data-toggle="modal" data-target="#bookDeleteSuccessModal" ng-click="books.deleteBook(books.bookDelete.id)">Yes, Delete Book</button>
                 <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">No, Leave Book</button>
             </div>
         </div>
@@ -99,12 +98,12 @@
 </div>
 
 <!-- Book Delete Success Modal -->
-<div class="modal fade" id="bookDeleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div ng-show="books.bookDelete.message" class="modal fade" id="bookDeleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
             <div class="modal-header" style="padding: 30px;">
-                <h5 class="modal-title">Book with title "{{books.bookDelete.title}}" was deleted.</h5><br/>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal" ng-click="books.reloadState('app')">Close</button>
+                <h5 class="modal-title">{{books.bookDelete.message}}</h5><br/>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>

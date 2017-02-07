@@ -14,6 +14,11 @@
         </div>
 
         <h4 style="margin-top:19px;">{{book.title}} - <small class="">{{book.author}}</small></h4>
+
+        <div>
+            <a ui-sref="app.viewBook({bookID: book._id})">View</a>
+            <a href="" data-toggle="modal" data-target="#bookDeleteModal" ng-click="books.deleteFromList(book._id, book.title)"> | Delete from list</a>
+        </div>
     </div>
 </div>
 <center style="margin-top: 20px;">
@@ -21,3 +26,31 @@
     <div ng-show='books.loading.busy && books.loading.complete'><img width="20px" src="http://intuitglobal.intuit.com/delivery/cms/prod/sites/default/intuit.ca/images/quickbooks-sui-images/loader.gif" /> No more data...<br/><br/></div>
     <div><button class="btn btn-default" ng-click="books.loadMoreData()">Load more...</button></div>
 </center>
+
+<!-- Book Delete Modal -->
+<div class="modal fade" id="bookDeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br/>
+                <h4 class="modal-title">Do you want to delete the book named "{{books.book.title}}" from your favorites list?</h4>
+                <br/>
+                <button type="button" class="btn btn-danger btn-sm" data-dismiss="modal" data-toggle="modal" data-target="#bookDeleteSuccessModal" ng-click="books.deleteBook()">Yes, Delete Book</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">No, Leave Book</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Book Delete Success Modal -->
+<div ng-show="books.message" class="modal fade" id="bookDeleteSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 30px;">
+                <h5 class="modal-title">{{books.message}}</h5><br/>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

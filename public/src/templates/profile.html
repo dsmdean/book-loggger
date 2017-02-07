@@ -3,7 +3,7 @@
         <div class="col-md-4 login-box" style="margin-right: 5%; min-height: 451px;">
             <div class="text-center">
                 <img width="200px" src="http://images.iimg.in/c/569f4771c45d324bda8b4660-4-501-0-1453279096/google/user-icon-png-pnglogocom.img?crop=1" />
-                <h3>{{profile.currentUser.firstname}} {{profile.currentUser.lastname}}</h3><br/>
+                <h3>{{profile.currentUser.firstname}} {{profile.currentUser.lastname}}</h3><span class="badge" style="background-color: #3289c8;">{{profile.getBadge(profile.currentUser.total_minutes_read)}}</span><br/><br/>
             </div>
             <div class="">
                 <h5>
@@ -50,10 +50,24 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-4 col-md-1">
-                            <button class="btn btn-default" ng-click="profile.updateUser()">Update User</button>
+                            <button class="btn btn-default" data-toggle="modal" data-target="#UpdateUserSuccessModal" ng-click="profile.updateUser()">Update User</button>
                         </div>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Profile Update Success Modal -->
+<div ng-show="profile.message" class="modal fade" id="UpdateUserSuccessModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 30px;">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <br/>
+                <h5 class="modal-title">{{profile.message}}</h5><br/>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
