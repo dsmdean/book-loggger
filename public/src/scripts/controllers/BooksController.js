@@ -113,12 +113,12 @@
         vm.setBookRead = function(bookID, title) {
             vm.bookRead.id = bookID;
             vm.bookRead.title = title;
-        }
+        };
 
         vm.setBookDelete = function(bookID, title) {
             vm.bookDelete.id = bookID;
             vm.bookDelete.title = title;
-        }
+        };
 
         vm.reloadState = function(state) {
             $state.transitionTo(state, $stateParams, {

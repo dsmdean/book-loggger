@@ -26,7 +26,7 @@
 
         vm.goToPage = function(page) {
             $location.path(page);
-        }
+        };
     }
 
     angular.module('app')

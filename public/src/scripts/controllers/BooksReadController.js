@@ -47,13 +47,13 @@
         function getReadBooks() {
             userDataService.getReadBooks(authentication.getCurrentUser().id)
                 .then(getBooksSuccess)
-                .catch(errorCallback)
-        };
+                .catch(errorCallback);
+        }
 
         vm.deleteFromList = function(bookID, title) {
             vm.book = { id: bookID, title: title };
             $log.log(vm.book.title);
-        }
+        };
 
         function deleteBookSuccess(message) {
             $log.info(message);

@@ -51,7 +51,7 @@
 
         vm.loadState = function(state) {
             $state.transitionTo(state);
-        }
+        };
     }
 
     angular.module('app')

@@ -26,7 +26,7 @@
 
                 return loadedData;
             }, 500);
-        };
+        }
 
         return {
             getLoading: getLoading,

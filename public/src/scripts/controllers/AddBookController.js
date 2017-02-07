@@ -25,7 +25,7 @@
 
         vm.goToBooks = function() {
             $state.transitionTo('app');
-        }
+        };
     }
 
     angular.module('app')

@@ -37,7 +37,7 @@
 
         vm.goToFavorites = function() {
             $state.transitionTo('app.favoriteBooks');
-        }
+        };
     }
 
     angular.module('app')
