@@ -107,6 +107,7 @@
         function updateUser(user) {
 
             cacheService.deleteCurrentUserResponseFromCache();
+            cacheService.deleteAllUsersResponseFromCache();
             authentication.updateCurrentUser(user);
 
             return $http({

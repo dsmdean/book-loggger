@@ -15,6 +15,10 @@ var User = new Schema({
         type: String,
         default: ''
     },
+    image: {
+        type: String,
+        default: ''
+    },
     weekly_reading_goal: {
         type: Number,
         default: 0

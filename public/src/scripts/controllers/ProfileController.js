@@ -5,6 +5,7 @@
         var vm = this;
         vm.message;
         vm.getBadge = badgeService.retrieveBadge;
+        vm.defaultImg = 'http://images.iimg.in/c/569f4771c45d324bda8b4660-4-501-0-1453279096/google/user-icon-png-pnglogocom.img?crop=1';
 
         function getUserSuccess(user) {
             vm.currentUser = user;

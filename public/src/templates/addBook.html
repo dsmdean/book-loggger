@@ -1,6 +1,11 @@
 <div class="container margin_60">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2 login-box">
+        <div class="col-md-4 login-box" style="margin-right: 5%;">
+            <div class="">
+                <img ng-src="{{bookAdder.newBook.image || bookAdder.thumbnail}}" height="250px" title="{{bookAdder.newBook.title}} Cover" />
+            </div>
+        </div>
+        <div class="col-md-7 login-box" style="margin-top: 5%;">
             <div class="text-center">
                 <h3>Add Book</h3>
             </div>
@@ -23,6 +28,12 @@
                         <label for="bookPublished" class="col-md-1 col-md-offset-1 control-label">Year</label>
                         <div class="col-sm-8">
                             <input type="text" ng-model="bookAdder.newBook.year_published" class="form-control" id="bookPublished" placeholder="Year Published">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookCover" class="col-md-1 col-md-offset-1 control-label">Book Cover</label>
+                        <div class="col-sm-8">
+                            <input type="text" ng-model="bookAdder.newBook.image" class="form-control" id="bookCover" placeholder="Book Cover">
                         </div>
                     </div>
                     <div class="form-group">

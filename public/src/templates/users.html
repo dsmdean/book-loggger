@@ -8,9 +8,9 @@
     </h3>
 </div>
 <div class="row">
-    <div class="col-sm-3 col-md-2 book-listing boxInner" ng-repeat="user in users.loadedUsers | filter:users.search" style="min-height: 250px;">
+    <div class="col-sm-3 col-md-2 book-listing boxInner" ng-repeat="user in users.loadedUsers | filter:users.search" style="min-height: 282px;">
         <div class="book-container book-list">
-            <img ng-src="{{users.thumbnail}}" width="150px" title="{{user.firstname}} {{user.firstname}} Thumbnail" />
+            <img ng-src="{{user.image || users.thumbnail}}" height="150px" title="{{user.firstname}} {{user.firstname}} Thumbnail" />
         </div>
 
         <h4 style="margin-top:19px;">{{user.firstname}} {{user.lastname}} <small class="">({{user.username}})</small></h4>

@@ -6,6 +6,7 @@
 
         vm.isAuthenticated = authentication.isAuthenticated();
         vm.message;
+        vm.thumbnail = "https://images-na.ssl-images-amazon.com/images/I/414JxjdtBHL._SY344_BO1,204,203,200_.jpg";
 
         function getBookSuccess(book) {
             vm.currentBook = book;

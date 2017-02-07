@@ -1,6 +1,11 @@
 <div class="container margin_60">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2 login-box">
+        <div class="col-md-4 login-box" style="margin-right: 5%;">
+            <div class="">
+                <img ng-src="{{book.currentBook.image || book.thumbnail}}" height="250px" title="{{book.currentBook.title}} Cover" />
+            </div>
+        </div>
+        <div class="col-md-7 login-box" style="margin-top: 5%;">
             <div class="text-center">
                 <h3>View Book</h3>
             </div>

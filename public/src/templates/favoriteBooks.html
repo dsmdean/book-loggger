@@ -10,7 +10,7 @@
 <div class="row">
     <div class="col-sm-3 col-md-2 book-listing boxInner" ng-repeat="book in books.loadedBooks | filter:books.search">
         <div class="book-container book-list">
-            <img ng-src="{{books.thumbnail}}" height="250px" title="{{book.title}} Thumbnail" />
+            <img ng-src="{{book.image || books.thumbnail}}" height="250px" title="{{book.title}} Cover" />
         </div>
 
         <h4 style="margin-top:19px;">{{book.title}} - <small class="">{{book.author}}</small></h4>
